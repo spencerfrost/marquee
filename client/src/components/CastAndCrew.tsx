@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MediaDetail } from '../utils/types';
+import type { MediaDetail } from '@/utils/types';
 
 export const CastAndCrew: React.FC<{ media: MediaDetail }> = ({ media }) => {
   const director = media.credits?.crew.find((c) => c.job === 'Director');

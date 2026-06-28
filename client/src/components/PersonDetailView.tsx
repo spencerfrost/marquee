@@ -1,8 +1,8 @@
 // PersonDetailView.tsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchPersonDetails } from '../utils/api';
-import { PersonDetail } from '../utils/types';
+import { fetchPersonDetails } from '@/utils/api';
+import type { PersonDetail } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { DetailContainer } from './DetailContainer';
 

@@ -1,4 +1,4 @@
-import { MediaSummary } from '@/utils/types';
+import type { MediaSummary } from '@/utils/types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 

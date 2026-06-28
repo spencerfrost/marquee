@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchSeasonDetails } from '../utils/api';
-import { TvSeason, TvEpisode } from '../utils/types';
+import { fetchSeasonDetails } from '@/utils/api';
+import type { TvSeason, TvEpisode } from '@/utils/types';
 
 interface EpisodeHeatmapProps {
     seriesId: number;

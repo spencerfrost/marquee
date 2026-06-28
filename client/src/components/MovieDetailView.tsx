@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { fetchMediaDetails } from '../utils/api';
-import { MediaDetail } from '../utils/types';
+import { fetchMediaDetails } from '@/utils/api';
+import type { MediaDetail } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
 import { ScoreRing } from './ScoreRing';

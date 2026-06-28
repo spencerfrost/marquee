@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchEpisodeDetails } from '../utils/api';
+import { fetchEpisodeDetails } from '@/utils/api';
 import { Alert, AlertDescription } from './ui/alert';
-import { EpisodeDetail } from '../utils/types';
+import type { EpisodeDetail } from '@/utils/types';
 import { DetailContainer } from './DetailContainer';
 import { ImageGallery } from './ImageGallery';
 

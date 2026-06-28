@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { fetchMediaDetails, fetchSeasonDetails } from '../utils/api';
-import { MediaDetail, TvSeason, TvEpisode } from '../utils/types';
-import { Button } from './ui/button';
+import { fetchMediaDetails, fetchSeasonDetails } from '@/utils/api';
+import type { MediaDetail, TvSeason, TvEpisode } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
 import { EpisodeHeatmap } from './EpisodeHeatmap';
