@@ -13,20 +13,20 @@ import {
 } from "@/components/ui/combobox";
 
 const TOP_COMPANIES: CompanySummary[] = [
-  { id: 178464, name: 'Netflix', logoPath: null, originCountry: '' },
+  { id: 178464, name: 'Netflix', logoPath: null, originCountry: 'US' },
   { id: 20580, name: 'Amazon Studios', logoPath: null, originCountry: 'US' },
   { id: 210099, name: 'Amazon MGM Studios', logoPath: null, originCountry: 'US' },
   { id: 7, name: 'DreamWorks Pictures', logoPath: null, originCountry: 'US' },
-  { id: 107965, name: 'Apple Studios', logoPath: null, originCountry: 'US' },
+  { id: 194232, name: 'Apple Studios', logoPath: null, originCountry: 'US' },
   { id: 3268, name: 'HBO', logoPath: null, originCountry: 'US' },
   { id: 41077, name: 'A24', logoPath: null, originCountry: 'US' },
-  { id: 2, name: 'Walt Disney Pictures', logoPath: null, originCountry: '' },
-  { id: 174, name: 'Warner Bros. Pictures', logoPath: null, originCountry: '' },
-  { id: 33, name: 'Universal Pictures', logoPath: null, originCountry: '' },
-  { id: 4, name: 'Paramount Pictures', logoPath: null, originCountry: '' },
-  { id: 5, name: 'Columbia Pictures', logoPath: null, originCountry: '' },
-  { id: 59, name: 'Paramount Vantage', logoPath: null, originCountry: '' },
-  { id: 10221, name: 'Pixar', logoPath: null, originCountry: '' },
+  { id: 2, name: 'Walt Disney Pictures', logoPath: null, originCountry: 'US' },
+  { id: 174, name: 'Warner Bros. Pictures', logoPath: null, originCountry: 'US' },
+  { id: 33, name: 'Universal Pictures', logoPath: null, originCountry: 'US' },
+  { id: 4, name: 'Paramount Pictures', logoPath: null, originCountry: 'US' },
+  { id: 5, name: 'Columbia Pictures', logoPath: null, originCountry: 'US' },
+  { id: 838, name: 'Paramount Vantage', logoPath: null, originCountry: 'US' },
+  { id: 3, name: 'Pixar', logoPath: null, originCountry: 'US' },
 ];
 
 interface CompanySelectorProps {
@@ -97,7 +97,7 @@ export const CompanySelector: React.FC<CompanySelectorProps> = ({
               variant="default" 
               className="flex items-center gap-1 bg-amber-500 text-slate-950"
             >
-              {c.name} ({c.originCountry})
+              {c.name} {c.originCountry === 'US' ? '' : `(${c.originCountry})`}
               <button 
                 onClick={() => handleRemove(c.id)} 
                 className="ml-1 rounded-full p-0.5 hover:bg-amber-600 transition-colors"
@@ -118,7 +118,7 @@ export const CompanySelector: React.FC<CompanySelectorProps> = ({
           onChange={(e) => setQuery(e.target.value)}
           className="border-slate-700 bg-slate-800/80 text-sm text-slate-100" 
         />
-        <ComboboxContent className="border-slate-700 bg-slate-900 shadow-xl max-h-60 overflow-y-auto">
+        <ComboboxContent className="border-slate-700 bg-slate-900 shadow-xl">
           <ComboboxEmpty className="text-slate-400 py-2 px-4 text-sm">
             {isSearching ? "Searching..." : "No studios found."}
           </ComboboxEmpty>
@@ -129,7 +129,7 @@ export const CompanySelector: React.FC<CompanySelectorProps> = ({
                 value={company.id.toString()}
                 className="text-slate-300 hover:bg-slate-800 hover:text-slate-100 cursor-pointer py-2 px-4 text-sm w-full text-left"
               >
-                {company.name} ({company.originCountry})
+                {company.name} {company.originCountry === 'US' ? '' : `(${company.originCountry})`}
               </ComboboxItem>
             )}
           </ComboboxList>
