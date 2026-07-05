@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { Slider } from './ui/slider';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
 import type { Genre, CompanySummary, NetworkSummary } from '@/utils/types';
 import { GenreSelector } from './GenreSelector';
 import { CompanySelector } from './CompanySelector';
 import { NetworkSelector } from './NetworkSelector';
 import { YearSelector } from './YearSelector';
+
+// Mirrors the server's fallback floor in discoverFiltered.ts — keep in sync
+export const DEFAULT_MIN_VOTES = { movie: 200, tv: 50 } as const;
 
 interface DiscoverControlsProps {
   mediaType: 'movie' | 'tv';
@@ -18,6 +22,8 @@ interface DiscoverControlsProps {
   setYear: (year: number | null) => void;
   minRating: number;
   setMinRating: (rating: number) => void;
+  minVoteCount: number | null;
+  setMinVoteCount: (count: number | null) => void;
   genres: Genre[];
   genreIds: number[];
   setGenreIds: (ids: number[]) => void;
@@ -38,6 +44,8 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
   setYear,
   minRating,
   setMinRating,
+  minVoteCount,
+  setMinVoteCount,
   genres,
   genreIds,
   setGenreIds,
@@ -50,18 +58,28 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
 }) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
+  const effectiveMinVotes = minVoteCount ?? DEFAULT_MIN_VOTES[mediaType];
+
+  // Values equal to the media-type default normalize back to null ("use
+  // default"), so retyping the default clears the override and the badge.
+  const handleMinVotesChange = (raw: number) => {
+    const clamped = Math.max(0, Math.floor(raw) || 0);
+    setMinVoteCount(clamped === DEFAULT_MIN_VOTES[mediaType] ? null : clamped);
+  };
+
   // Calculate how many advanced filters are currently active.
   // Networks only count for TV — selections are kept in state when switching
   // to Movies (so toggling back restores them) but aren't applied there.
   const activeFilterCount =
     (year !== null ? 1 : 0) +
     (minRating > 0 ? 1 : 0) +
+    (minVoteCount !== null ? 1 : 0) +
     genreIds.length +
     selectedCompanies.length +
     (mediaType === 'tv' ? selectedNetworks.length : 0);
 
   return (
-    <div className="sticky top-4 z-20 rounded-xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-black/30 backdrop-blur-md transition-all duration-300">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-black/30 backdrop-blur-md transition-all duration-300">
       <div className="flex flex-col gap-4">
 
         {/* Top Row: Media Type, Search, & Actions */}
@@ -142,22 +160,55 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
                   Min Rating:{' '}
                   <span className="font-mono text-amber-400 ml-1">{minRating.toFixed(1)}</span>
                 </Label>
-                <Input
-                  id="min-rating"
-                  type="range"
-                  min="0"
-                  max="10"
-                  step="0.5"
-                  value={minRating}
-                  disabled={!!searchQuery}
-                  onChange={(e) => setMinRating(parseFloat(e.target.value))}
-                  className="w-40 accent-amber-500 disabled:opacity-40"
-                />
+                {/* Fixed-width wrapper: the slider root stretches to w-full,
+                    which collapses inside a flex row without it */}
+                <div className="w-48">
+                  <Slider
+                    id="min-rating"
+                    min={0}
+                    max={10}
+                    step={0.5}
+                    value={[minRating]}
+                    disabled={!!searchQuery}
+                    onValueChange={(value) =>
+                      setMinRating(Array.isArray(value) ? value[0] : value)
+                    }
+                  />
+                </div>
                 {searchQuery && (
                   <span className="text-xs text-slate-500 italic">
                     (Disabled during title search)
                   </span>
                 )}
+              </div>
+
+              <div className="flex items-center gap-4">
+                <Label htmlFor="min-votes" className="whitespace-nowrap text-sm font-medium text-slate-300">
+                  Min Votes
+                </Label>
+                {/* Single-element array: the ui/slider wrapper renders one
+                    thumb per value; slider pegs at 1000 for larger typed values */}
+                <div className="w-48">
+                  <Slider
+                    id="min-votes"
+                    min={0}
+                    max={1000}
+                    step={50}
+                    value={[Math.min(effectiveMinVotes, 1000)]}
+                    onValueChange={(value) =>
+                      handleMinVotesChange(Array.isArray(value) ? value[0] : value)
+                    }
+                  />
+                </div>
+                <Input
+                  type="number"
+                  min="0"
+                  step="50"
+                  aria-label="Min Votes"
+                  value={effectiveMinVotes}
+                  onChange={(e) => handleMinVotesChange(e.target.valueAsNumber)}
+                  className="w-24 border-slate-700 bg-slate-800/80 font-mono text-slate-100 focus-visible:ring-amber-500/40 focus-visible:border-amber-500/60"
+                />
               </div>
             </div>
 
