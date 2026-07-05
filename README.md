@@ -1,6 +1,8 @@
-# TMDB Movie/TV Show Discovery App
+# Marquee — TMDB Movie/TV Show Discovery App
 
 A React app for discovering and browsing movies and TV shows using [The Movie Database (TMDB)](https://www.themoviedb.org/) API. Search or filter a poster grid, then drill into full detail pages for movies, TV shows, individual episodes, and cast/crew.
+
+The app is split into a `client/` (React frontend) and a `server/` (a small Express proxy that holds the TMDB API key, so it's never exposed to the browser).
 
 ## Features
 
@@ -32,55 +34,105 @@ A React app for discovering and browsing movies and TV shows using [The Movie Da
 **Cross-cutting**
 - Each card and detail page links out to the title's TMDB page and to a self-hosted Seerr instance for requesting media
 - Consistent dark UI with a shared rating-score component used across cards, hero sections, and the heatmap
+- TMDB API key lives only on the server — never bundled into client JS or visible in the browser
 
 ## Technologies Used
 
+**Client**
 - React
 - TypeScript
 - React Router
 - Tailwind CSS
 - shadcn/ui components
 - lucide-react (icons)
-- TMDB API
+
+**Server**
+- Express
+- TypeScript
+
+## Project Structure
+
+```
+marquee/
+├── client/      # React frontend
+├── server/      # Express proxy that holds the TMDB API key
+├── ecosystem.config.js
+└── deploy.sh
+```
+
+Key pieces, for orientation:
+
+- `client/src/components/DiscoverPage.tsx` / `DiscoverControls.tsx` — search, filters, and the poster grid
+- `client/src/components/MediaCard.tsx` — poster card used in the discover grid
+- `client/src/components/MovieDetailView.tsx` / `TvDetailView.tsx` — top-level detail pages for each media type
+- `client/src/components/EpisodeDetailView.tsx` — single episode page, including the image gallery
+- `client/src/components/PersonDetailView.tsx` — cast/crew member page and filmography
+- `client/src/components/CastAndCrew.tsx` — shared cast rail used on movie and TV detail pages
+- `client/src/components/EpisodeHeatmap.tsx` — per-season episode rating grid on TV show pages
+- `client/src/components/ImageGallery.tsx` / `Lightbox.tsx` — episode still thumbnails and full-screen viewer
+- `client/src/components/DetailContainer.tsx` — shared page chrome (back navigation) wrapping all detail views
+- `client/src/utils/api.ts` — calls to the server's `/api/*` routes, and response-to-app-type mapping
+- `client/src/utils/types.ts` — shared types for media summaries, details, and TMDB response shapes
+- `server/src/routes/` — one Express route per TMDB resource (discover, media, season, episode, person)
+- `server/src/tmdb.ts` — the only place the TMDB API key is read and used
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v14 or later)
+- Node.js (v18 or later — the server uses native `fetch`)
 - npm
+- A [TMDB API key](https://www.themoviedb.org/settings/api)
 
 ### Installation
 
 1. Clone the repository:
-   ```
-   git clone https://github.com/your-username/tmdb-movie-tv-fetcher.git
-   cd tmdb-movie-tv-fetcher
-   ```
-
-2. Install dependencies:
-   ```
-   npm install
-   ```
-
-3. Copy the example file and add your TMDB credentials:
    ```bash
+   git clone https://github.com/your-username/marquee.git
+   cd marquee
+   ```
+
+2. Install dependencies for both the client and server:
+   ```bash
+   cd client && npm install
+   cd ../server && npm install
+   ```
+
+3. Set up the server's environment file:
+   ```bash
+   cd server
    cp .env.example .env
    ```
-
-4. Open `.env` and set your TMDB API key:
+   Open `server/.env` and add your TMDB API key:
    ```text
-   REACT_APP_API_KEY=your_tmdb_api_key_here
-   REACT_APP_BASE_URL=https://api.themoviedb.org/3
-   REACT_APP_POSTER_BASE_URL=https://image.tmdb.org/t/p/w500
+   TMDB_API_KEY=your_tmdb_api_key_here
+   TMDB_BASE_URL=https://api.themoviedb.org/3
+   PORT=3221
    ```
 
-5. Start the development server:
+4. Set up the client's environment file:
+   ```bash
+   cd ../client
+   cp .env.example .env
    ```
+   `client/.env` only needs the poster image base URL — there's no API key on the client side:
+   ```text
+   VITE_POSTER_BASE_URL=https://image.tmdb.org/t/p/w500
+   ```
+
+5. Start the server (in one terminal):
+   ```bash
+   cd server
+   npm run dev
+   ```
+
+6. Start the client (in another terminal):
+   ```bash
+   cd client
    npm start
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+7. Open [http://localhost:3000](http://localhost:3000) in your browser to view the app. The client's dev server proxies `/api/*` requests to the local server automatically (see the `"proxy"` field in `client/package.json`) — no CORS setup needed.
 
 ## Usage
 
@@ -91,21 +143,13 @@ A React app for discovering and browsing movies and TV shows using [The Movie Da
 - Click a cast member, crew credit, or director to view their person page and filmography.
 - Use the TMDB and Seerr icons on a card or detail page to open that title externally.
 
-## Project Structure
+## Deployment
 
-Key pieces, for orientation:
+This app is self-hosted via PM2 + Nginx:
 
-- `DiscoverPage` / `DiscoverControls` — search, filters, and the poster grid
-- `MediaCard` — poster card used in the discover grid
-- `MovieDetails` / `TvDetailView` — top-level detail pages for each media type
-- `EpisodeDetailView` — single episode page, including the image gallery
-- `PersonDetailView` — cast/crew member page and filmography
-- `CastAndCrew` — shared cast rail used on movie and TV detail pages
-- `EpisodeHeatmap` — per-season episode rating grid on TV show pages
-- `ImageGallery` / `Lightbox` — episode still thumbnails and full-screen viewer
-- `DetailContainer` — shared page chrome (back navigation) wrapping all detail views
-- `utils/api.ts` — TMDB API calls and response-to-app-type mapping
-- `utils/types.ts` — shared types for media summaries, details, and TMDB response shapes
+- `deploy.sh` builds both the client and server, copies the client's static build and the server's compiled JS to the deploy target, and restarts the server process with PM2.
+- Nginx serves the client's static files directly and proxies `/api/*` requests to the server process (see `ecosystem.config.js` for the production port).
+- The server's `.env` file (holding `TMDB_API_KEY`) is **not** committed to git and must be created manually on the host before the first deploy.
 
 ## Contributing
 
