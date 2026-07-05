@@ -40,6 +40,8 @@ export const DiscoverPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [year, setYear] = useState<number | null>(null);
   const [minRating, setMinRating] = useState<number>(0);
+  // null = use the server default for the current media type (200 movie / 50 tv)
+  const [minVoteCount, setMinVoteCount] = useState<number | null>(null);
   const [genreIds, setGenreIds] = useState<number[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<CompanySummary[]>([]);
@@ -63,6 +65,7 @@ export const DiscoverPage: React.FC = () => {
       searchQuery: searchQuery.trim() || undefined,
       year: year ?? undefined,
       minRating: minRating > 0 ? minRating : undefined,
+      minVoteCount: minVoteCount ?? undefined,
       sortBy: `${SORT_KEYS[sortField][mediaType]}.${sortDirection}` as DiscoverSortBy,
       genreIds: genreIds.length > 0 ? genreIds : undefined,
       companyIds: selectedCompanies.length > 0 ? selectedCompanies.map(c => c.id) : undefined,
@@ -89,7 +92,7 @@ export const DiscoverPage: React.FC = () => {
       }));
 
     return { results, totalPages: data.total_pages, totalResults: data.total_results };
-  }, [mediaType, searchQuery, year, minRating, genreIds, selectedCompanies, selectedNetworks, sortField, sortDirection]);
+  }, [mediaType, searchQuery, year, minRating, minVoteCount, genreIds, selectedCompanies, selectedNetworks, sortField, sortDirection]);
 
   // Fresh load: replaces the grid and resets pagination. Runs on mount and
   // whenever any filter/sort changes (fetchPage's identity tracks them all).
@@ -129,24 +132,33 @@ export const DiscoverPage: React.FC = () => {
     }
   }, [fetchPage, loading, loadingMore, page, totalPages]);
 
+  // Keep the observer callback pointed at the latest loadMore without
+  // recreating the observer (a fresh observer fires immediately, which
+  // caused rapid repeat fetches while the sentinel sat near the viewport).
+  const loadMoreRef = useRef(loadMore);
+  useEffect(() => {
+    loadMoreRef.current = loadMore;
+  }, [loadMore]);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Load the next page when the sentinel below the grid approaches the viewport
+  // Load the next page when the sentinel below the grid approaches the
+  // viewport. Created once; loadMore's guards make extra firings harmless.
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) loadMore();
+        if (entries[0].isIntersecting) loadMoreRef.current();
       },
       { rootMargin: '400px' }
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [loadMore]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-950">
@@ -180,6 +192,8 @@ export const DiscoverPage: React.FC = () => {
           setYear={setYear}
           minRating={minRating}
           setMinRating={setMinRating}
+          minVoteCount={minVoteCount}
+          setMinVoteCount={setMinVoteCount}
           genreIds={genreIds}
           setGenreIds={setGenreIds}
           selectedCompanies={selectedCompanies}
@@ -225,24 +239,19 @@ export const DiscoverPage: React.FC = () => {
             ))}
           </div>
         ) : items.length > 0 ? (
-          <>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {items.map((item) => (
-                <MediaCard key={item.id} item={item} />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {items.map((item) => (
+              <MediaCard key={item.id} item={item} />
+            ))}
+            {loadingMore &&
+              Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={`more-${i}`}
+                  className="aspect-[2/3] animate-pulse rounded-xl bg-slate-800/60"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                />
               ))}
-              {loadingMore &&
-                Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={`more-${i}`}
-                    className="aspect-[2/3] animate-pulse rounded-xl bg-slate-800/60"
-                    style={{ animationDelay: `${i * 60}ms` }}
-                  />
-                ))}
-            </div>
-            {/* Sentinel: observed by IntersectionObserver to trigger loading
-                the next page; loadMore's guards make extra firings harmless */}
-            {page < totalPages && <div ref={sentinelRef} className="h-px" />}
-          </>
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 py-20 text-center">
             <p className="text-sm font-medium text-slate-300">No results found</p>
@@ -251,6 +260,10 @@ export const DiscoverPage: React.FC = () => {
             </p>
           </div>
         )}
+
+        {/* Always mounted so the once-created IntersectionObserver stays
+            attached; loadMore's guards decide whether a firing does anything */}
+        <div ref={sentinelRef} className="h-px" />
       </div>
     </div>
   );
