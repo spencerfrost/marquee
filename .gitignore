@@ -33,3 +33,5 @@ server/node_modules/
 client/node_modules/
 server/dist/
 client/build/
+client/.vite/
+client-bak
