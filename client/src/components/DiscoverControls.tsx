@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
-import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
@@ -8,16 +7,15 @@ import type { Genre, CompanySummary, NetworkSummary } from '@/utils/types';
 import { GenreSelector } from './GenreSelector';
 import { CompanySelector } from './CompanySelector';
 import { NetworkSelector } from './NetworkSelector';
+import { YearSelector } from './YearSelector';
 
 interface DiscoverControlsProps {
   mediaType: 'movie' | 'tv';
   setMediaType: (type: 'movie' | 'tv') => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  fetchByYear: boolean;
-  setFetchByYear: (fetch: boolean) => void;
-  year: number;
-  setYear: (year: number) => void;
+  year: number | null;
+  setYear: (year: number | null) => void;
   minRating: number;
   setMinRating: (rating: number) => void;
   genres: Genre[];
@@ -36,8 +34,6 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
   setMediaType,
   searchQuery,
   setSearchQuery,
-  fetchByYear,
-  setFetchByYear,
   year,
   setYear,
   minRating,
@@ -58,7 +54,7 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
   // Networks only count for TV — selections are kept in state when switching
   // to Movies (so toggling back restores them) but aren't applied there.
   const activeFilterCount =
-    (fetchByYear ? 1 : 0) +
+    (year !== null ? 1 : 0) +
     (minRating > 0 ? 1 : 0) +
     genreIds.length +
     selectedCompanies.length +
@@ -135,23 +131,10 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
             {/* Numerical/Toggle Filters */}
             <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
               <div className="flex items-center gap-3">
-                <Checkbox
-                  id="fetch-by-year"
-                  checked={fetchByYear}
-                  onCheckedChange={(checked) => setFetchByYear(checked as boolean)}
-                  className="border-slate-600 data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
-                />
-                <Label htmlFor="fetch-by-year" className="text-sm font-medium text-slate-300">
+                <Label htmlFor="year" className="text-sm font-medium text-slate-300">
                   Year
                 </Label>
-                <Input
-                  id="year"
-                  type="number"
-                  value={year}
-                  disabled={!fetchByYear}
-                  onChange={(e) => setYear(parseInt(e.target.value, 10))}
-                  className="w-24 border-slate-700 bg-slate-800/80 font-mono text-sm text-slate-100 disabled:opacity-40"
-                />
+                <YearSelector year={year} onChange={setYear} />
               </div>
 
               <div className="flex items-center gap-4">
