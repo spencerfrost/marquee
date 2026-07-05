@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { fetchDiscoverMediaWithFilters, fetchGenres, POSTER_BASE_URL } from '@/utils/api';
-import type { Genre, MediaSummary, CompanySummary } from '@/utils/types';
+import type { Genre, MediaSummary, CompanySummary, NetworkSummary } from '@/utils/types';
 import MediaCard from './MediaCard';
 import { DiscoverControls } from './DiscoverControls';
 import { Alert, AlertDescription } from './ui/alert';
@@ -19,6 +19,7 @@ export const DiscoverPage: React.FC = () => {
   const [genreIds, setGenreIds] = useState<number[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<CompanySummary[]>([]);
+  const [selectedNetworks, setSelectedNetworks] = useState<NetworkSummary[]>([]);
 
 
   useEffect(() => {
@@ -37,6 +38,11 @@ export const DiscoverPage: React.FC = () => {
         minRating: minRating > 0 ? minRating : undefined,
         genreIds: genreIds.length > 0 ? genreIds : undefined,
         companyIds: selectedCompanies.length > 0 ? selectedCompanies.map(c => c.id) : undefined,
+        // Networks are TV-only in TMDB; selections persist in state but are
+        // never sent for movie requests
+        networkIds: mediaType === 'tv' && selectedNetworks.length > 0
+          ? selectedNetworks.map(n => n.id)
+          : undefined,
       });
 
       const processedData: MediaSummary[] = data.results
@@ -60,7 +66,7 @@ export const DiscoverPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [mediaType, searchQuery, fetchByYear, year, minRating, genreIds, selectedCompanies]);
+  }, [mediaType, searchQuery, fetchByYear, year, minRating, genreIds, selectedCompanies, selectedNetworks]);
 
   useEffect(() => {
     fetchData();
@@ -104,6 +110,8 @@ export const DiscoverPage: React.FC = () => {
           setGenreIds={setGenreIds}
           selectedCompanies={selectedCompanies}
           setSelectedCompanies={setSelectedCompanies}
+          selectedNetworks={selectedNetworks}
+          setSelectedNetworks={setSelectedNetworks}
           genres={genres}
           onSearch={fetchData}
           loading={loading}

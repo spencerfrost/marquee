@@ -4,9 +4,10 @@ import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
-import type { Genre, CompanySummary } from '@/utils/types';
+import type { Genre, CompanySummary, NetworkSummary } from '@/utils/types';
 import { GenreSelector } from './GenreSelector';
 import { CompanySelector } from './CompanySelector';
+import { NetworkSelector } from './NetworkSelector';
 
 interface DiscoverControlsProps {
   mediaType: 'movie' | 'tv';
@@ -24,6 +25,8 @@ interface DiscoverControlsProps {
   setGenreIds: (ids: number[]) => void;
   selectedCompanies: CompanySummary[];
   setSelectedCompanies: (companies: CompanySummary[]) => void;
+  selectedNetworks: NetworkSummary[];
+  setSelectedNetworks: (networks: NetworkSummary[]) => void;
   onSearch: () => void;
   loading: boolean;
 }
@@ -44,17 +47,22 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
   setGenreIds,
   selectedCompanies,
   setSelectedCompanies,
+  selectedNetworks,
+  setSelectedNetworks,
   onSearch,
   loading,
 }) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
-  // Calculate how many advanced filters are currently active
+  // Calculate how many advanced filters are currently active.
+  // Networks only count for TV — selections are kept in state when switching
+  // to Movies (so toggling back restores them) but aren't applied there.
   const activeFilterCount =
     (fetchByYear ? 1 : 0) +
     (minRating > 0 ? 1 : 0) +
     genreIds.length +
-    selectedCompanies.length;
+    selectedCompanies.length +
+    (mediaType === 'tv' ? selectedNetworks.length : 0);
 
   return (
     <div className="sticky top-4 z-20 rounded-xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-black/30 backdrop-blur-md transition-all duration-300">
@@ -192,6 +200,19 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
                   onChange={setSelectedCompanies}
                 />
               </div>
+
+              {/* TMDB only supports network filtering on /discover/tv */}
+              {mediaType === 'tv' && (
+                <div className="flex flex-col gap-2">
+                  <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Networks
+                  </Label>
+                  <NetworkSelector
+                    selectedNetworks={selectedNetworks}
+                    onChange={setSelectedNetworks}
+                  />
+                </div>
+              )}
             </div>
 
           </div>

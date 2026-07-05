@@ -16,7 +16,7 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'mediaType must be "movie" or "tv"' });
   }
 
-  const { searchQuery, year, minRating, sortBy, genreIds, companyIds } = req.query;
+  const { searchQuery, year, minRating, sortBy, genreIds, companyIds, networkIds } = req.query;
 
   try {
     const yearKey = mediaType === 'movie' ? 'primary_release_year' : 'first_air_date_year';
@@ -32,6 +32,9 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
       'vote_average.gte': minRating as string | undefined,
       with_genres: genreIds as string | undefined,
       with_companies: companyIds as string | undefined,
+      // TV-only: TMDB ignores with_networks on /discover/movie, and the
+      // client only sends it for tv.
+      with_networks: networkIds as string | undefined,
       // Undocumented param — combines free text with discover filters.
       // This is the experimental piece; everything else above is
       // standard, documented /discover behavior.

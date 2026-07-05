@@ -169,6 +169,13 @@ export interface CompanySummary {
   originCountry?: string; // Optional, as not all companies may have this info
 }
 
+// Sourced from TMDB's daily network id export, which carries no logos or
+// countries — just id and name.
+export interface NetworkSummary {
+  id: number;
+  name: string;
+}
+
 export type DiscoverSortBy =
   | 'popularity.desc'
   | 'popularity.asc'
@@ -187,4 +194,5 @@ export interface DiscoverFilterParams {
   sortBy?: DiscoverSortBy;
   genreIds?: number[];      // AND logic, comma-joined for with_genres
   companyIds?: number[];    // AND logic, comma-joined for with_companies
+  networkIds?: number[];    // OR logic, pipe-joined for with_networks; TV only
 }

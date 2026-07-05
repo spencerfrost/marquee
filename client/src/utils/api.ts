@@ -5,6 +5,7 @@ import type {
   DiscoverFilterParams,
   Genre,
   CompanySummary,
+  NetworkSummary,
 } from './types';
 
 export const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -132,7 +133,7 @@ export const fetchPersonDetails = async (personId: number) => {
 export const fetchDiscoverMediaWithFilters = async (
   params: DiscoverFilterParams
 ): Promise<TMDBDiscoverResponse> => {
-  const { mediaType, searchQuery, year, minRating, sortBy, genreIds, companyIds } = params;
+  const { mediaType, searchQuery, year, minRating, sortBy, genreIds, companyIds, networkIds } = params;
 
   const query = new URLSearchParams();
   if (searchQuery) query.set('searchQuery', searchQuery);
@@ -143,6 +144,7 @@ export const fetchDiscoverMediaWithFilters = async (
   // Pipe = OR within a param; genres and companies are AND'd across params
   if (genreIds?.length) query.set('genreIds', genreIds.join('|'));
   if (companyIds?.length) query.set('companyIds', companyIds.join('|'));
+  if (networkIds?.length) query.set('networkIds', networkIds.join('|'));
 
   const response = await fetch(`/api/discover-filtered/${mediaType}?${query.toString()}`);
   if (!response.ok) throw new Error('Failed to fetch filtered discover data');
@@ -154,6 +156,14 @@ export const fetchGenres = async (mediaType: 'movie' | 'tv'): Promise<Genre[]> =
   if (!response.ok) throw new Error('Failed to fetch genres');
   const data = await response.json();
   return (data.genres || []).map((g: any) => ({ id: g.id, name: g.name }));
+};
+
+export const searchNetworks = async (query: string): Promise<NetworkSummary[]> => {
+  if (!query.trim()) return [];
+  const response = await fetch(`/api/network/search?query=${encodeURIComponent(query)}`);
+  if (!response.ok) throw new Error('Failed to search networks');
+  const data = await response.json();
+  return (data.results || []).map((n: any) => ({ id: n.id, name: n.name }));
 };
 
 export const searchCompanies = async (query: string): Promise<CompanySummary[]> => {

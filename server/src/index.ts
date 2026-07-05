@@ -8,6 +8,7 @@ import personRouter from './routes/person';
 import discoverFilteredRouter from './routes/discoverFiltered';
 import genreRouter from './routes/genre';
 import companyRouter from './routes/company';
+import networkRouter from './routes/network';
 
 const app = express();
 const PORT = process.env.PORT || 3221;
@@ -24,6 +25,7 @@ app.use('/api/person', personRouter);
 app.use('/api/discover-filtered', discoverFilteredRouter);
 app.use('/api/genre', genreRouter);
 app.use('/api/company', companyRouter);
+app.use('/api/network', networkRouter);
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 
