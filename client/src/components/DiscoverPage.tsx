@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { fetchDiscoverMedia, POSTER_BASE_URL } from '../utils/api';
-import { MediaSummary } from '../utils/types';
+import { fetchDiscoverMediaWithFilters, fetchGenres, POSTER_BASE_URL } from '@/utils/api';
+import type { Genre, MediaSummary, CompanySummary } from '@/utils/types';
 import MediaCard from './MediaCard';
 import { DiscoverControls } from './DiscoverControls';
 import { Alert, AlertDescription } from './ui/alert';
@@ -16,16 +16,27 @@ export const DiscoverPage: React.FC = () => {
   const [fetchByYear, setFetchByYear] = useState<boolean>(false);
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [minRating, setMinRating] = useState<number>(0);
+  const [genreIds, setGenreIds] = useState<number[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [selectedCompanies, setSelectedCompanies] = useState<CompanySummary[]>([]);
+
+
+  useEffect(() => {
+    setGenreIds([]); // Clear selected genres when switching type
+    fetchGenres(mediaType).then(setGenres).catch(console.error);
+  }, [mediaType]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchDiscoverMedia({
+      const data = await fetchDiscoverMediaWithFilters({
         mediaType,
         searchQuery: searchQuery.trim() || undefined,
         year: fetchByYear ? year : undefined,
         minRating: minRating > 0 ? minRating : undefined,
+        genreIds: genreIds.length > 0 ? genreIds : undefined,
+        companyIds: selectedCompanies.length > 0 ? selectedCompanies.map(c => c.id) : undefined,
       });
 
       const processedData: MediaSummary[] = data.results
@@ -49,7 +60,7 @@ export const DiscoverPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [mediaType, searchQuery, fetchByYear, year, minRating]);
+  }, [mediaType, searchQuery, fetchByYear, year, minRating, genreIds, selectedCompanies]);
 
   useEffect(() => {
     fetchData();
@@ -89,6 +100,11 @@ export const DiscoverPage: React.FC = () => {
           setYear={setYear}
           minRating={minRating}
           setMinRating={setMinRating}
+          genreIds={genreIds}
+          setGenreIds={setGenreIds}
+          selectedCompanies={selectedCompanies}
+          setSelectedCompanies={setSelectedCompanies}
+          genres={genres}
           onSearch={fetchData}
           loading={loading}
         />

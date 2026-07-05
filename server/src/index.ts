@@ -5,6 +5,9 @@ import mediaRouter from './routes/media';
 import seasonRouter from './routes/season';
 import episodeRouter from './routes/episode';
 import personRouter from './routes/person';
+import discoverFilteredRouter from './routes/discoverFiltered';
+import genreRouter from './routes/genre';
+import companyRouter from './routes/company';
 
 const app = express();
 const PORT = process.env.PORT || 3221;
@@ -18,6 +21,9 @@ app.use('/api/media', mediaRouter);
 app.use('/api/tv', seasonRouter);
 app.use('/api/tv', episodeRouter);
 app.use('/api/person', personRouter);
+app.use('/api/discover-filtered', discoverFilteredRouter);
+app.use('/api/genre', genreRouter);
+app.use('/api/company', companyRouter);
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 

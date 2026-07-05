@@ -156,3 +156,35 @@ export interface FetchMediaParams {
   minRating?: number;
   sortBy?: string;
 }
+
+export interface Genre {
+  id: number;
+  name: string;
+}
+
+export interface CompanySummary {
+  id: number;
+  name: string;
+  logoPath: string | null;
+  originCountry?: string; // Optional, as not all companies may have this info
+}
+
+export type DiscoverSortBy =
+  | 'popularity.desc'
+  | 'popularity.asc'
+  | 'vote_average.desc'
+  | 'vote_average.asc'
+  | 'release_date.desc'
+  | 'release_date.asc'
+  | 'first_air_date.desc'
+  | 'first_air_date.asc';
+
+export interface DiscoverFilterParams {
+  mediaType: 'movie' | 'tv';
+  searchQuery?: string;
+  year?: number;
+  minRating?: number;
+  sortBy?: DiscoverSortBy;
+  genreIds?: number[];      // AND logic, comma-joined for with_genres
+  companyIds?: number[];    // AND logic, comma-joined for with_companies
+}

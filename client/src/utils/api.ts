@@ -1,17 +1,18 @@
-import type { TMDBDiscoverResponse, MediaDetail, FetchMediaParams } from './types';
+import type {
+  TMDBDiscoverResponse,
+  MediaDetail,
+  FetchMediaParams,
+  DiscoverFilterParams,
+  Genre,
+  CompanySummary,
+} from './types';
 
-// POSTER_BASE_URL is still needed client-side to build image URLs -
-// it's not a secret, just a CDN path prefix.
-export const POSTER_BASE_URL = process.env.REACT_APP_POSTER_BASE_URL;
+export const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 export const fetchMediaDetails = async (
   mediaType: "movie" | "tv",
   id: number
 ): Promise<MediaDetail> => {
-  if (!POSTER_BASE_URL) {
-    throw new Error('Missing required environment variable: REACT_APP_POSTER_BASE_URL');
-  }
-
   const response = await fetch(`/api/media/${mediaType}/${id}`);
   if (!response.ok) throw new Error("Failed to fetch item details");
   const data = await response.json();
@@ -126,4 +127,44 @@ export const fetchPersonDetails = async (personId: number) => {
   const response = await fetch(`/api/person/${personId}`);
   if (!response.ok) throw new Error('Failed to fetch person details');
   return response.json();
+};
+
+export const fetchDiscoverMediaWithFilters = async (
+  params: DiscoverFilterParams
+): Promise<TMDBDiscoverResponse> => {
+  const { mediaType, searchQuery, year, minRating, sortBy, genreIds, companyIds } = params;
+
+  const query = new URLSearchParams();
+  if (searchQuery) query.set('searchQuery', searchQuery);
+  if (year) query.set('year', String(year));
+  if (minRating) query.set('minRating', String(minRating));
+  if (sortBy) query.set('sortBy', sortBy);
+  
+  // Pipe = OR within a param; genres and companies are AND'd across params
+  if (genreIds?.length) query.set('genreIds', genreIds.join('|'));
+  if (companyIds?.length) query.set('companyIds', companyIds.join('|'));
+
+  const response = await fetch(`/api/discover-filtered/${mediaType}?${query.toString()}`);
+  if (!response.ok) throw new Error('Failed to fetch filtered discover data');
+  return response.json();
+};
+
+export const fetchGenres = async (mediaType: 'movie' | 'tv'): Promise<Genre[]> => {
+  const response = await fetch(`/api/genre/${mediaType}`);
+  if (!response.ok) throw new Error('Failed to fetch genres');
+  const data = await response.json();
+  return (data.genres || []).map((g: any) => ({ id: g.id, name: g.name }));
+};
+
+export const searchCompanies = async (query: string): Promise<CompanySummary[]> => {
+  if (!query.trim()) return [];
+  const response = await fetch(`/api/company/search?query=${encodeURIComponent(query)}`);
+  if (!response.ok) throw new Error('Failed to search companies');
+  const data = await response.json();
+  return (data.results || []).map((c: any) => ({
+    id: c.id,
+    name: c.name,
+    logoPath: c.logo_path ? `${POSTER_BASE_URL}${c.logo_path}` : null,
+    originCountry: c.origin_country || '',
+  }));
 };
