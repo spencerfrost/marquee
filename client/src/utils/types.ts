@@ -176,15 +176,13 @@ export interface NetworkSummary {
   name: string;
 }
 
+// UI-level sort state; abstract so a selection survives movie/tv switches
+export type SortField = 'popularity' | 'rating' | 'date' | 'title';
+export type SortDirection = 'asc' | 'desc';
+
+// TMDB sort_by keys. Movie and TV use different names for date and title sorts.
 export type DiscoverSortBy =
-  | 'popularity.desc'
-  | 'popularity.asc'
-  | 'vote_average.desc'
-  | 'vote_average.asc'
-  | 'release_date.desc'
-  | 'release_date.asc'
-  | 'first_air_date.desc'
-  | 'first_air_date.asc';
+  `${'popularity' | 'vote_average' | 'primary_release_date' | 'first_air_date' | 'title' | 'name'}.${SortDirection}`;
 
 export interface DiscoverFilterParams {
   mediaType: 'movie' | 'tv';
@@ -195,4 +193,5 @@ export interface DiscoverFilterParams {
   genreIds?: number[];      // AND logic, comma-joined for with_genres
   companyIds?: number[];    // AND logic, comma-joined for with_companies
   networkIds?: number[];    // OR logic, pipe-joined for with_networks; TV only
+  page?: number;            // 1-based; TMDB caps at 500
 }

@@ -133,10 +133,11 @@ export const fetchPersonDetails = async (personId: number) => {
 export const fetchDiscoverMediaWithFilters = async (
   params: DiscoverFilterParams
 ): Promise<TMDBDiscoverResponse> => {
-  const { mediaType, searchQuery, year, minRating, sortBy, genreIds, companyIds, networkIds } = params;
+  const { mediaType, searchQuery, year, minRating, sortBy, genreIds, companyIds, networkIds, page } = params;
 
   const query = new URLSearchParams();
   if (searchQuery) query.set('searchQuery', searchQuery);
+  if (page) query.set('page', String(page));
   if (year) query.set('year', String(year));
   if (minRating) query.set('minRating', String(minRating));
   if (sortBy) query.set('sortBy', sortBy);
