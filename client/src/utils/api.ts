@@ -133,13 +133,15 @@ export const fetchPersonDetails = async (personId: number) => {
 export const fetchDiscoverMediaWithFilters = async (
   params: DiscoverFilterParams
 ): Promise<TMDBDiscoverResponse> => {
-  const { mediaType, searchQuery, year, minRating, sortBy, genreIds, companyIds, networkIds, page } = params;
+  const { mediaType, searchQuery, year, minRating, minVoteCount, sortBy, genreIds, companyIds, networkIds, page } = params;
 
   const query = new URLSearchParams();
   if (searchQuery) query.set('searchQuery', searchQuery);
   if (page) query.set('page', String(page));
   if (year) query.set('year', String(year));
   if (minRating) query.set('minRating', String(minRating));
+  // Not truthiness: an explicit 0 means "no floor" and must reach the server
+  if (minVoteCount !== undefined) query.set('minVoteCount', String(minVoteCount));
   if (sortBy) query.set('sortBy', sortBy);
   
   // Pipe = OR within a param; genres and companies are AND'd across params

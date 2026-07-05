@@ -16,7 +16,7 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'mediaType must be "movie" or "tv"' });
   }
 
-  const { searchQuery, year, minRating, sortBy, genreIds, companyIds, networkIds, page } = req.query;
+  const { searchQuery, year, minRating, minVoteCount, sortBy, genreIds, companyIds, networkIds, page } = req.query;
 
   try {
     const yearKey = mediaType === 'movie' ? 'primary_release_year' : 'first_air_date_year';
@@ -26,10 +26,13 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
     const parsedPage = parseInt(page as string, 10);
     const pageNumber = Number.isNaN(parsedPage) ? 1 : Math.min(Math.max(parsedPage, 1), 500);
 
-    // Rating sort needs a vote floor, or one-vote 10/10 obscurities rank first
-    const voteFloor = sort.startsWith('vote_average')
-      ? (mediaType === 'movie' ? '200' : '50')
-      : undefined;
+    // Every sort needs a vote floor, or zero-vote obscurities dominate:
+    // one-vote 10/10s top rating sort, unreleased junk tops date sort.
+    // An explicit minVoteCount overrides the default; 0 means "no floor".
+    const parsedFloor = parseInt(minVoteCount as string, 10);
+    const voteFloor = !Number.isNaN(parsedFloor) && parsedFloor >= 0
+      ? (parsedFloor > 0 ? String(parsedFloor) : undefined)
+      : (mediaType === 'movie' ? '200' : '50');
 
     const data = await tmdbFetch(`/discover/${mediaType}`, {
       language: 'en-US',

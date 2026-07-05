@@ -189,6 +189,7 @@ export interface DiscoverFilterParams {
   searchQuery?: string;
   year?: number;
   minRating?: number;
+  minVoteCount?: number;    // 0 = no floor; undefined = server default (200 movie / 50 tv)
   sortBy?: DiscoverSortBy;
   genreIds?: number[];      // AND logic, comma-joined for with_genres
   companyIds?: number[];    // AND logic, comma-joined for with_companies
