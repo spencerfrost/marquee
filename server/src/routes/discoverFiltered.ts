@@ -16,17 +16,28 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'mediaType must be "movie" or "tv"' });
   }
 
-  const { searchQuery, year, minRating, sortBy, genreIds, companyIds, networkIds } = req.query;
+  const { searchQuery, year, minRating, sortBy, genreIds, companyIds, networkIds, page } = req.query;
 
   try {
     const yearKey = mediaType === 'movie' ? 'primary_release_year' : 'first_air_date_year';
+    const sort = (sortBy as string) || 'popularity.desc';
+
+    // TMDB rejects pages outside 1-500
+    const parsedPage = parseInt(page as string, 10);
+    const pageNumber = Number.isNaN(parsedPage) ? 1 : Math.min(Math.max(parsedPage, 1), 500);
+
+    // Rating sort needs a vote floor, or one-vote 10/10 obscurities rank first
+    const voteFloor = sort.startsWith('vote_average')
+      ? (mediaType === 'movie' ? '200' : '50')
+      : undefined;
 
     const data = await tmdbFetch(`/discover/${mediaType}`, {
       language: 'en-US',
-      sort_by: (sortBy as string) || 'popularity.desc',
+      sort_by: sort,
+      'vote_count.gte': voteFloor,
       include_adult: 'false',
       include_video: 'false',
-      page: 1,
+      page: pageNumber,
       with_original_language: 'en',
       [yearKey]: year as string | undefined,
       'vote_average.gte': minRating as string | undefined,
