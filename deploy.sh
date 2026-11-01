@@ -21,7 +21,7 @@ cd "$PROJECT_ROOT"/server && npm ci
 
 # 3. Build
 echo "🏗️ Building client production assets..."
-cd "$PROJECT_ROOT"/client && rm -rf build && npm run build
+cd "$PROJECT_ROOT"/client && rm -rf dist && npm run build
 
 echo "🏗️ Building server production assets..."
 cd "$PROJECT_ROOT"/server && rm -rf dist && npm run build
@@ -30,7 +30,7 @@ cd "$PROJECT_ROOT"/server && rm -rf dist && npm run build
 echo "🚚 Syncing client build to $CLIENT_TARGET..."
 sudo mkdir -p "$CLIENT_TARGET"
 sudo find "$CLIENT_TARGET" -maxdepth 1 -mindepth 1 -not -name server -exec rm -rf {} +
-sudo cp -r "$PROJECT_ROOT"/client/build/* "$CLIENT_TARGET"/
+sudo cp -r "$PROJECT_ROOT"/client/dist/* "$CLIENT_TARGET"/
 
 # 5. Deploy server
 echo "🚚 Syncing server build to $SERVER_TARGET..."
