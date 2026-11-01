@@ -11,7 +11,7 @@ The review found 5 bugs, 7 feature ideas and 4 housekeeping items. Two fixes cam
 1. A shared date helper, which fixes dates showing a day early for anyone west of UTC.
 2. Discover filters stored in the URL, which fixes lost state on Back and makes the clickable-metadata feature possible.
 
-All 5 bugs and all housekeeping items are now fixed; the features are still open.
+All 5 bugs and all housekeeping items are now fixed. Four of the seven features are done; watchlist, region-aware ratings and polish are still open.
 
 ## Bugs
 
@@ -33,8 +33,8 @@ Seven additions, ordered by value for effort. The first unlocks the second.
 | --- | --- | --- | --- |
 | Filters in the URL | Sync `DiscoverFilters` to search params with `useSearchParams` | Fixes bug 2; searches become shareable and bookmarkable | Done (with bug 2) |
 | Clickable metadata | Keywords, genres, companies and networks on detail pages link to Discover with that filter set | Filters already exist; this links them up for rich browsing at low cost | Done — `client/src/components/MetadataLinks.tsx`; genres sit under the tagline, networks/studios/keywords replace the old keyword list |
-| Server-side cache | In-memory cache with expiry in `tmdbFetch`, plus `Cache-Control` headers; genres, regions, providers ~1 day, trending ~10 min | Faster pages; protects TMDB quota | Open |
-| Proxy hardening | `express-rate-limit`, `compression`, and logging `err` in route `catch` blocks | The public proxy uses your key; errors are swallowed and PM2 logs show nothing | Open |
+| Server-side cache | In-memory cache with expiry in `tmdbFetch`, plus `Cache-Control` headers; genres, regions, providers ~1 day, trending ~10 min | Faster pages; protects TMDB quota | Done — 500-entry LRU in `server/src/tmdb.ts` that shares in-flight requests and skips failures; everything else is cached 1 hour; matching headers set in `index.ts` |
+| Proxy hardening | `express-rate-limit`, `compression`, and logging `err` in route `catch` blocks | The public proxy uses your key; errors are swallowed and PM2 logs show nothing | Done — 120 requests/min per IP with `trust proxy` set to loopback; routes log through `server/src/errors.ts`; `compression` skipped because Nginx already gzips JSON |
 | Watchlist and seen flags | localStorage first, then a "hide seen" Discover filter | Turns a browser into something used regularly | Open |
 | Region-aware ratings | `findCertification` reads the selected region, falling back to US | Matches watch-provider behaviour (default region is CA) | Open |
 | Polish | Per-page `document.title`; a 404 route; `youtube-nocookie.com` and `loading="lazy"` on the trailer iframe; Seerr URL from an env var | Small fixes; removes the hardcoded personal domain in `MediaCard` | Open |
