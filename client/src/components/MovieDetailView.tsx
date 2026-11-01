@@ -5,6 +5,7 @@ import { formatDate, releaseYear } from '@/utils/date';
 import type { MediaDetail } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
+import { GenreLinks, MetadataLinks } from './MetadataLinks';
 import { ScoreRing } from './ScoreRing';
 import { WatchProviders } from './WatchProviders';
 import MediaCard from './MediaCard';
@@ -104,6 +105,8 @@ return (
           {movie.tagline && (
             <p className="mt-2 italic text-slate-400">{movie.tagline}</p>
           )}
+
+          <GenreLinks media={movie} />
 
           <div className="mt-5 flex flex-wrap items-center gap-6">
             {typeof movie.rating === 'number' && (
@@ -226,23 +229,7 @@ return (
       </div>
     )}
 
-    {movie.keywords.length > 0 && (
-      <div className="border-t border-slate-800 px-6 py-6 md:px-8">
-        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-          Keywords
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {movie.keywords.map((keyword) => (
-            <span
-              key={keyword.id}
-              className="rounded-full border border-slate-700 bg-slate-800/60 px-3 py-1 text-xs text-slate-300"
-            >
-              {keyword.name}
-            </span>
-          ))}
-        </div>
-      </div>
-    )}
+    <MetadataLinks media={movie} />
 
     <div className="border-t border-slate-800 px-6 py-6 md:px-8">
       <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">

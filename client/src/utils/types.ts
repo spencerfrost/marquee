@@ -43,6 +43,8 @@ export interface MediaDetail extends MediaBase {
     name: string;
     originCountry: string;
   }[];
+  // TV only; empty for movies.
+  networks: NetworkSummary[];
   productionCountries: { iso_3166_1: string; name: string }[];
   spokenLanguages: { englishName: string; iso639_1: string; name: string }[];
   credits?: {

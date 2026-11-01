@@ -188,6 +188,9 @@ export const fetchMediaDetails = async (
         originCountry: company.origin_country || '',
       }))
       : [],
+    networks: Array.isArray(data.networks)
+      ? data.networks.map((network: any) => ({ id: network.id, name: network.name || '' }))
+      : [],
     productionCountries: Array.isArray(data.production_countries)
       ? data.production_countries.map((country: any) => ({
         iso_3166_1: country.iso_3166_1 || '',

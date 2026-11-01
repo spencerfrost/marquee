@@ -227,6 +227,12 @@ function filtersToParams(filters: DiscoverFilters): URLSearchParams {
   return params;
 }
 
+// Link into Discover with only the given filters set — used by detail pages
+// to turn genres, keywords, companies and networks into browsable links.
+export function discoverHref(overrides: Partial<DiscoverFilters>): string {
+  return `/?${filtersToParams({ ...initialFilters, ...overrides })}`;
+}
+
 function filtersFromParams(params: URLSearchParams): DiscoverFilters {
   const num = (key: string): number | null => {
     const raw = params.get(key);

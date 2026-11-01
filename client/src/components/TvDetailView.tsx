@@ -4,6 +4,7 @@ import { formatDate, releaseYear } from '@/utils/date';
 import type { MediaDetail, TvSeason, TvEpisode } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
+import { GenreLinks, MetadataLinks } from './MetadataLinks';
 import { EpisodeHeatmap } from './EpisodeHeatmap';
 import { ScoreRing } from './ScoreRing';
 import { WatchProviders } from './WatchProviders';
@@ -139,6 +140,8 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
             {show.tagline && (
               <p className="mt-2 italic text-slate-400">{show.tagline}</p>
             )}
+
+            <GenreLinks media={show} />
 
             <div className="mt-5 flex flex-wrap items-center gap-6">
               {/* Score ring, reused from MediaCard language */}
@@ -319,23 +322,7 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
         </div>
       )}
 
-      {show.keywords.length > 0 && (
-        <div className="border-t border-slate-800 px-6 py-6 md:px-8">
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-            Keywords
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {show.keywords.map((keyword) => (
-              <span
-                key={keyword.id}
-                className="rounded-full border border-slate-700 bg-slate-800/60 px-3 py-1 text-xs text-slate-300"
-              >
-                {keyword.name}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+      <MetadataLinks media={show} />
 
       <div className="border-t border-slate-800 px-6 py-6 md:px-8">
         <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
