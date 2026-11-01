@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchEpisodeDetails } from '@/utils/api';
+import { formatDate } from '@/utils/date';
 import { Alert, AlertDescription } from './ui/alert';
 import type { EpisodeDetail } from '@/utils/types';
 import { DetailContainer } from './DetailContainer';
@@ -92,7 +93,7 @@ const EpisodeDetailView: React.FC = () => {
             </span>
             <span className="text-sm text-slate-500">
               {episode.air_date
-                ? new Date(episode.air_date).toLocaleDateString()
+                ? formatDate(episode.air_date)
                 : 'Air date TBD'}
             </span>
           </div>

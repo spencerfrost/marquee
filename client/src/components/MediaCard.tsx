@@ -1,4 +1,5 @@
 import type { MediaSummary } from '@/utils/types';
+import { releaseYear } from '@/utils/date';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -117,7 +118,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ item }) => {
         </h3>
         <p className="mt-1 text-xs font-medium text-slate-400">
           {item.releaseDate
-            ? new Date(item.releaseDate).getFullYear()
+            ? releaseYear(item.releaseDate)
             : 'Unknown year'}
         </p>
       </div>

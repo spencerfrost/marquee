@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchMediaDetails, fetchSeasonDetails } from '@/utils/api';
+import { formatDate, releaseYear } from '@/utils/date';
 import type { MediaDetail, TvSeason, TvEpisode } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
@@ -115,7 +116,7 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
                 </span>
               )}
               <span className="text-sm text-slate-400">
-                {show.releaseDate ? new Date(show.releaseDate).getFullYear() : 'TBD'}
+                {show.releaseDate ? releaseYear(show.releaseDate) : 'TBD'}
               </span>
             </div>
 
@@ -268,7 +269,7 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
                         </div>
                         <p className="mb-2 font-mono text-xs text-slate-500">
                           {episode.air_date
-                            ? new Date(episode.air_date).toLocaleDateString()
+                            ? formatDate(episode.air_date)
                             : 'TBD'}{' '}
                           · {episode.runtime ? `${episode.runtime} min` : 'Runtime unknown'}
                         </p>

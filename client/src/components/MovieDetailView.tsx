@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchMediaDetails } from '@/utils/api';
+import { formatDate, releaseYear } from '@/utils/date';
 import type { MediaDetail } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
@@ -85,7 +86,7 @@ return (
               </span>
             )}
             <span className="text-sm text-slate-400">
-              {movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : 'TBD'}
+              {movie.releaseDate ? releaseYear(movie.releaseDate) : 'TBD'}
             </span>
           </div>
 
@@ -124,7 +125,7 @@ return (
               <div>
                 <p className="font-mono text-base font-semibold text-white">
                   {movie.releaseDate
-                    ? new Date(movie.releaseDate).toLocaleDateString()
+                    ? formatDate(movie.releaseDate)
                     : '—'}
                 </p>
                 <p className="text-xs text-slate-500">Released</p>
