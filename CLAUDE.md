@@ -44,4 +44,4 @@ Consequences:
 
 - `docs/tmdb-api/` holds reference notes on the TMDB endpoints used (movie details, TV series/seasons/episodes).
 - `README.md` and `codebase-guide.md` are fuller walkthroughs, but parts predate the CRA→Vite migration: references to `npm start`, the `"proxy"` field in `client/package.json`, and port 3000 are stale — the Vite config above is the source of truth for local dev.
-- `deploy.sh` (PM2 + Nginx self-host deploy) copies `client/build/*`, but Vite outputs to `client/dist/` — check/fix this before relying on the script.
+- `deploy.sh` (PM2 + Nginx self-host deploy) builds both packages and copies `client/dist/*` to the Nginx root.
