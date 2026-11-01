@@ -11,7 +11,7 @@ The review found 5 bugs, 7 feature ideas and 4 housekeeping items. Two fixes cam
 1. A shared date helper, which fixes dates showing a day early for anyone west of UTC.
 2. Discover filters stored in the URL, which fixes lost state on Back and makes the clickable-metadata feature possible.
 
-All 5 bugs and all housekeeping items are now fixed. Four of the seven features are done; watchlist, region-aware ratings and polish are still open.
+All 5 bugs and all housekeeping items are now fixed. Five of the seven features are done; watchlist and region-aware ratings are still open.
 
 ## Bugs
 
@@ -37,7 +37,7 @@ Seven additions, ordered by value for effort. The first unlocks the second.
 | Proxy hardening | `express-rate-limit`, `compression`, and logging `err` in route `catch` blocks | The public proxy uses your key; errors are swallowed and PM2 logs show nothing | Done — 120 requests/min per IP with `trust proxy` set to loopback; routes log through `server/src/errors.ts`; `compression` skipped because Nginx already gzips JSON |
 | Watchlist and seen flags | localStorage first, then a "hide seen" Discover filter | Turns a browser into something used regularly | Open |
 | Region-aware ratings | `findCertification` reads the selected region, falling back to US | Matches watch-provider behaviour (default region is CA) | Open |
-| Polish | Per-page `document.title`; a 404 route; `youtube-nocookie.com` and `loading="lazy"` on the trailer iframe; Seerr URL from an env var | Small fixes; removes the hardcoded personal domain in `MediaCard` | Open |
+| Polish | Per-page `document.title`; a 404 route; `youtube-nocookie.com` and `loading="lazy"` on the trailer iframe; Seerr URL from an env var | Small fixes; removes the hardcoded personal domain in `MediaCard` | Done — `useDocumentTitle` on every page; `NotFoundPage` for unknown routes and bad detail params; trailers lazy-load from `youtube-nocookie.com`; Seerr is a per-browser setting (header button, localStorage) instead of an env var, so each visitor can use their own and the card link is hidden until set |
 
 ## Housekeeping
 
