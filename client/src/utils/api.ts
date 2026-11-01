@@ -2,13 +2,136 @@ import type {
   TMDBDiscoverResponse,
   MediaDetail,
   FetchMediaParams,
+  MediaSummary,
   DiscoverFilterParams,
   Genre,
   CompanySummary,
   NetworkSummary,
+  CollectionDetail,
+  CastMember,
+  CrewMember,
+  Keyword,
+  RegionWatchProviders,
+  WatchProviderEntry,
+  WatchRegion,
 } from './types';
 
 export const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+// Full-bleed hero backdrops need more than the poster's w500; w1280 is
+// TMDB's next size up and avoids visibly soft/blurry detail-page heroes.
+export const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
+// Company/provider logos render small — w185 is plenty and much lighter
+// than reusing the w500 poster size for what's often a tiny wordmark.
+export const LOGO_BASE_URL = 'https://image.tmdb.org/t/p/w185';
+
+// TV credits come from append_to_response=aggregate_credits, not credits:
+// it carries every episode's cast (hundreds of rows) instead of the ~8-person
+// opening-credits list, but each entry has roles[]/jobs[] + a total episode
+// count instead of a flat character/job. Movies keep the plain credits shape.
+function mapCast(mediaType: 'movie' | 'tv', raw: any[] | undefined): CastMember[] {
+  if (!Array.isArray(raw)) return [];
+  if (mediaType === 'tv') {
+    return raw
+      .map((c: any) => ({
+        id: c.id,
+        name: c.name,
+        character: c.roles?.[0]?.character || '',
+        profile_path: c.profile_path ? `${POSTER_BASE_URL}${c.profile_path}` : null,
+        episodeCount: c.total_episode_count || 0,
+      }))
+      // Series regulars first — `order` on aggregate_credits reflects a
+      // single (often unrepresentative) episode's billing, not the series.
+      .sort((a, b) => (b.episodeCount ?? 0) - (a.episodeCount ?? 0));
+  }
+  return raw.map((c: any) => ({
+    id: c.id,
+    name: c.name,
+    character: c.character,
+    profile_path: c.profile_path ? `${POSTER_BASE_URL}${c.profile_path}` : null,
+  }));
+}
+
+function mapCrew(mediaType: 'movie' | 'tv', raw: any[] | undefined): CrewMember[] {
+  if (!Array.isArray(raw)) return [];
+  if (mediaType === 'tv') {
+    return raw.map((c: any) => ({
+      id: c.id,
+      name: c.name,
+      job: c.jobs?.[0]?.job || '',
+      department: c.department || '',
+    }));
+  }
+  return raw.map((c: any) => ({
+    id: c.id,
+    name: c.name,
+    job: c.job,
+    department: c.department,
+  }));
+}
+
+function mapSummaries(mediaType: 'movie' | 'tv', raw: any): MediaSummary[] {
+  const results = raw?.results;
+  if (!Array.isArray(results)) return [];
+  return results.map((item: any) => ({
+    id: item.id,
+    title: item.title || item.name || '',
+    rating: item.vote_average || 0,
+    releaseDate: item.release_date || item.first_air_date || '',
+    posterPath: item.poster_path ? `${POSTER_BASE_URL}${item.poster_path}` : null,
+    mediaType,
+  }));
+}
+
+// Movie keyword payloads nest under `keywords`, TV under `results` — same
+// append_to_response key, different shape.
+function mapKeywords(raw: any): Keyword[] {
+  const list = raw?.keywords || raw?.results;
+  return Array.isArray(list) ? list.map((k: any) => ({ id: k.id, name: k.name })) : [];
+}
+
+function mapWatchProviders(raw: any): Record<string, RegionWatchProviders> {
+  const results = raw?.results;
+  if (!results || typeof results !== 'object') return {};
+
+  const mapEntries = (entries: any[] | undefined): WatchProviderEntry[] | undefined =>
+    Array.isArray(entries)
+      ? entries.map((p: any) => ({
+        providerId: p.provider_id,
+        providerName: p.provider_name,
+        logoPath: p.logo_path ? `${LOGO_BASE_URL}${p.logo_path}` : null,
+      }))
+      : undefined;
+
+  const byRegion: Record<string, RegionWatchProviders> = {};
+  for (const [region, entry] of Object.entries(results) as [string, any][]) {
+    byRegion[region] = {
+      link: entry.link,
+      flatrate: mapEntries(entry.flatrate),
+      rent: mapEntries(entry.rent),
+      buy: mapEntries(entry.buy),
+    };
+  }
+  return byRegion;
+}
+
+function findTrailerKey(videos: any): string | null {
+  const results = videos?.results;
+  if (!Array.isArray(results)) return null;
+  const trailer = results.find((v: any) => v.type === 'Trailer' && v.site === 'YouTube');
+  return trailer?.key ?? null;
+}
+
+// Movie: release_dates.results[].release_dates[].certification, US only.
+// TV: content_ratings.results[].rating, US only.
+function findCertification(mediaType: 'movie' | 'tv', data: any): string {
+  if (mediaType === 'movie') {
+    const us = data.release_dates?.results?.find((r: any) => r.iso_3166_1 === 'US');
+    const withCert = us?.release_dates?.find((rd: any) => rd.certification);
+    return withCert?.certification || '';
+  }
+  const us = data.content_ratings?.results?.find((r: any) => r.iso_3166_1 === 'US');
+  return us?.rating || '';
+}
 
 export const fetchMediaDetails = async (
   mediaType: "movie" | "tv",
@@ -17,6 +140,8 @@ export const fetchMediaDetails = async (
   const response = await fetch(`/api/media/${mediaType}/${id}`);
   if (!response.ok) throw new Error("Failed to fetch item details");
   const data = await response.json();
+
+  const creditsRaw = mediaType === 'tv' ? data.aggregate_credits : data.credits;
 
   return {
     id: data.id,
@@ -31,7 +156,7 @@ export const fetchMediaDetails = async (
     releaseDate: data.release_date || data.first_air_date || '',
     firstAirDate: data.first_air_date || '',
     posterPath: data.poster_path ? `${POSTER_BASE_URL}${data.poster_path}` : null,
-    backdropPath: data.backdrop_path ? `${POSTER_BASE_URL}${data.backdrop_path}` : null,
+    backdropPath: data.backdrop_path ? `${BACKDROP_BASE_URL}${data.backdrop_path}` : null,
     mediaType,
     runtime: data.runtime || null,
     episodeRunTime: Array.isArray(data.episode_run_time) && data.episode_run_time.length > 0 ? data.episode_run_time[0] : null,
@@ -56,7 +181,7 @@ export const fetchMediaDetails = async (
     productionCompanies: Array.isArray(data.production_companies)
       ? data.production_companies.map((company: any) => ({
         id: company.id,
-        logoPath: company.logo_path ? `${POSTER_BASE_URL}${company.logo_path}` : null,
+        logoPath: company.logo_path ? `${LOGO_BASE_URL}${company.logo_path}` : null,
         name: company.name || '',
         originCountry: company.origin_country || '',
       }))
@@ -74,20 +199,22 @@ export const fetchMediaDetails = async (
         name: language.name || '',
       }))
       : [],
-    credits: data.credits ? {
-      cast: data.credits.cast.map((c: any) => ({
-        id: c.id,
-        name: c.name,
-        character: c.character,
-        profile_path: c.profile_path ? `${POSTER_BASE_URL}${c.profile_path}` : null,
-      })),
-      crew: data.credits.crew.map((c: any) => ({
-        id: c.id,
-        name: c.name,
-        job: c.job,
-        department: c.department,
-      })),
+    credits: creditsRaw ? {
+      cast: mapCast(mediaType, creditsRaw.cast),
+      crew: mapCrew(mediaType, creditsRaw.crew),
     } : undefined,
+    keywords: mapKeywords(data.keywords),
+    recommendations: mapSummaries(mediaType, data.recommendations),
+    watchProviders: mapWatchProviders(data['watch/providers']),
+    trailerKey: findTrailerKey(data.videos),
+    certification: findCertification(mediaType, data),
+    collection: data.belongs_to_collection ? {
+      id: data.belongs_to_collection.id,
+      name: data.belongs_to_collection.name || '',
+      posterPath: data.belongs_to_collection.poster_path
+        ? `${POSTER_BASE_URL}${data.belongs_to_collection.poster_path}`
+        : null,
+    } : null,
   };
 };
 
@@ -180,4 +307,34 @@ export const searchCompanies = async (query: string): Promise<CompanySummary[]> 
     logoPath: c.logo_path ? `${POSTER_BASE_URL}${c.logo_path}` : null,
     originCountry: c.origin_country || '',
   }));
+};
+
+export const fetchCollectionDetails = async (id: number): Promise<CollectionDetail> => {
+  const response = await fetch(`/api/collection/${id}`);
+  if (!response.ok) throw new Error('Failed to fetch collection details');
+  const data = await response.json();
+  return {
+    id: data.id,
+    name: data.name || '',
+    overview: data.overview || '',
+    posterPath: data.poster_path ? `${POSTER_BASE_URL}${data.poster_path}` : null,
+    backdropPath: data.backdrop_path ? `${BACKDROP_BASE_URL}${data.backdrop_path}` : null,
+    parts: (data.parts || [])
+      .filter((p: any) => p.media_type === 'movie' || p.media_type === 'tv' || p.title || p.release_date)
+      .map((p: any) => ({
+        id: p.id,
+        title: p.title || p.name || '',
+        rating: p.vote_average || 0,
+        releaseDate: p.release_date || p.first_air_date || '',
+        posterPath: p.poster_path ? `${POSTER_BASE_URL}${p.poster_path}` : null,
+        mediaType: 'movie' as const,
+      })),
+  };
+};
+
+export const fetchWatchProviderRegions = async (): Promise<WatchRegion[]> => {
+  const response = await fetch('/api/watch-providers/regions');
+  if (!response.ok) throw new Error('Failed to fetch watch provider regions');
+  const data = await response.json();
+  return data.results || [];
 };

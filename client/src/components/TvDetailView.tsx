@@ -5,6 +5,8 @@ import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
 import { EpisodeHeatmap } from './EpisodeHeatmap';
 import { ScoreRing } from './ScoreRing';
+import { WatchProviders } from './WatchProviders';
+import MediaCard from './MediaCard';
 
 interface TvDetailViewProps {
   id: number;
@@ -107,6 +109,11 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
               <span className="rounded-full border border-slate-600/60 bg-slate-800/80 px-2.5 py-1 text-xs font-medium uppercase tracking-wide text-slate-300">
                 {show.status}
               </span>
+              {show.certification && (
+                <span className="rounded border border-slate-500/60 px-1.5 py-0.5 font-mono text-xs font-semibold text-slate-300">
+                  {show.certification}
+                </span>
+              )}
               <span className="text-sm text-slate-400">
                 {show.releaseDate ? new Date(show.releaseDate).getFullYear() : 'TBD'}
               </span>
@@ -278,6 +285,63 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {show.trailerKey && (
+        <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Trailer
+          </h3>
+          <div className="aspect-video w-full overflow-hidden rounded-lg bg-black">
+            <iframe
+              src={`https://www.youtube.com/embed/${show.trailerKey}`}
+              title="Trailer"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="h-full w-full"
+            />
+          </div>
+        </div>
+      )}
+
+      {show.keywords.length > 0 && (
+        <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Keywords
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {show.keywords.map((keyword) => (
+              <span
+                key={keyword.id}
+                className="rounded-full border border-slate-700 bg-slate-800/60 px-3 py-1 text-xs text-slate-300"
+              >
+                {keyword.name}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Where to watch
+        </h3>
+        <WatchProviders providersByRegion={show.watchProviders} />
+      </div>
+
+      {show.recommendations.length > 0 && (
+        <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Recommended
+          </h3>
+          <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-2">
+            {show.recommendations.map((item) => (
+              <div key={item.id} className="w-32 flex-shrink-0">
+                <MediaCard item={item} />
+              </div>
+            ))}
           </div>
         </div>
       )}

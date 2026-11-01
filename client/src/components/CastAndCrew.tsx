@@ -48,7 +48,12 @@ return (
               <p className="truncate text-sm font-semibold text-slate-200 transition-colors group-hover:text-amber-400">
                 {person.name}
               </p>
-              <p className="truncate text-xs text-slate-500">{person.character}</p>
+              <p className="truncate text-xs text-slate-500">
+                {person.character}
+                {typeof person.episodeCount === 'number' && person.episodeCount > 0 && (
+                  <> · {person.episodeCount} ep{person.episodeCount === 1 ? '' : 's'}</>
+                )}
+              </p>
             </Link>
           ))}
         </div>

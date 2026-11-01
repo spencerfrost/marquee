@@ -4,6 +4,7 @@ import { DiscoverPage } from "./components/DiscoverPage";
 import DetailPage from "./components/DetailPage";
 import EpisodeDetailView from "./components/EpisodeDetailView";
 import PersonDetailView from "./components/PersonDetailView";
+import CollectionDetailView from "./components/CollectionDetailView";
 
 const App: React.FC = () => {
   return (
@@ -14,9 +15,10 @@ const App: React.FC = () => {
             <DiscoverPage />
           </div>
         } />
+        <Route path="/collection/:id" element={<CollectionDetailView />} />
         <Route path="/:mediaType/:id" element={<DetailPage />} />
-        <Route path="/person/:id" element={<PersonDetailView />} /> 
-        <Route 
+        <Route path="/person/:id" element={<PersonDetailView />} />
+        <Route
           path="/tv/:seriesId/season/:seasonNumber/episode/:episodeNumber" 
           element={<EpisodeDetailView />} 
         />

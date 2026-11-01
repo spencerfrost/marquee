@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchMediaDetails } from '@/utils/api';
 import type { MediaDetail } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
 import { ScoreRing } from './ScoreRing';
+import { WatchProviders } from './WatchProviders';
+import MediaCard from './MediaCard';
 
 interface MovieDetailViewProps {
   id: number;
@@ -76,6 +79,11 @@ return (
             <span className="rounded-full border border-slate-600/60 bg-slate-800/80 px-2.5 py-1 text-xs font-medium uppercase tracking-wide text-slate-300">
               {movie.status}
             </span>
+            {movie.certification && (
+              <span className="rounded border border-slate-500/60 px-1.5 py-0.5 font-mono text-xs font-semibold text-slate-300">
+                {movie.certification}
+              </span>
+            )}
             <span className="text-sm text-slate-400">
               {movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : 'TBD'}
             </span>
@@ -165,6 +173,88 @@ return (
     {movie.credits && (
       <div className="border-t border-slate-800 px-6 py-6 md:px-8">
         <CastAndCrew media={movie} />
+      </div>
+    )}
+
+    {movie.trailerKey && (
+      <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Trailer
+        </h3>
+        <div className="aspect-video w-full overflow-hidden rounded-lg bg-black">
+          <iframe
+            src={`https://www.youtube.com/embed/${movie.trailerKey}`}
+            title="Trailer"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="h-full w-full"
+          />
+        </div>
+      </div>
+    )}
+
+    {movie.collection && (
+      <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Part of {movie.collection.name}
+        </h3>
+        <Link
+          to={`/collection/${movie.collection.id}`}
+          className="group flex w-fit items-center gap-3 rounded-lg border border-slate-800 bg-slate-800/40 p-2 pr-4 transition-colors hover:border-slate-700 hover:bg-slate-800/70"
+        >
+          <div className="h-16 w-11 flex-shrink-0 overflow-hidden rounded bg-slate-800">
+            {movie.collection.posterPath && (
+              <img
+                src={movie.collection.posterPath}
+                alt={movie.collection.name}
+                className="h-full w-full object-cover"
+              />
+            )}
+          </div>
+          <span className="text-sm font-medium text-slate-200 transition-colors group-hover:text-amber-400">
+            View the collection
+          </span>
+        </Link>
+      </div>
+    )}
+
+    {movie.keywords.length > 0 && (
+      <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Keywords
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {movie.keywords.map((keyword) => (
+            <span
+              key={keyword.id}
+              className="rounded-full border border-slate-700 bg-slate-800/60 px-3 py-1 text-xs text-slate-300"
+            >
+              {keyword.name}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Where to watch
+      </h3>
+      <WatchProviders providersByRegion={movie.watchProviders} />
+    </div>
+
+    {movie.recommendations.length > 0 && (
+      <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Recommended
+        </h3>
+        <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-2">
+          {movie.recommendations.map((item) => (
+            <div key={item.id} className="w-32 flex-shrink-0">
+              <MediaCard item={item} />
+            </div>
+          ))}
+        </div>
       </div>
     )}
   </div>

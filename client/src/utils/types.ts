@@ -49,6 +49,39 @@ export interface MediaDetail extends MediaBase {
     cast: CastMember[];
     crew: CrewMember[];
   };
+  keywords: Keyword[];
+  recommendations: MediaSummary[];
+  // Keyed by ISO 3166-1 country code (TMDB returns every region in one call).
+  watchProviders: Record<string, RegionWatchProviders>;
+  trailerKey: string | null;
+  certification: string;
+  // Movie only. Reuses CollectionSummary since collection.ts already defines
+  // the shape this needs (id/name/posterPath).
+  collection: CollectionSummary | null;
+}
+
+export interface Keyword {
+  id: number;
+  name: string;
+}
+
+export interface WatchProviderEntry {
+  providerId: number;
+  providerName: string;
+  logoPath: string | null;
+}
+
+export interface RegionWatchProviders {
+  link?: string;
+  flatrate?: WatchProviderEntry[];
+  rent?: WatchProviderEntry[];
+  buy?: WatchProviderEntry[];
+}
+
+export interface WatchRegion {
+  iso_3166_1: string;
+  english_name: string;
+  native_name: string;
 }
 
 // --- API Response Mappings (TMDB Raw Structure) ---
@@ -109,6 +142,9 @@ export interface CastMember {
   name: string;
   character: string;
   profile_path: string | null;
+  // TV only, from aggregate_credits — total episodes across all of this
+  // person's roles on the show; drives the series-regulars-first sort.
+  episodeCount?: number;
 }
 
 export interface CrewMember {
@@ -174,6 +210,21 @@ export interface CompanySummary {
 export interface NetworkSummary {
   id: number;
   name: string;
+}
+
+export interface CollectionSummary {
+  id: number;
+  name: string;
+  posterPath: string | null;
+}
+
+export interface CollectionDetail {
+  id: number;
+  name: string;
+  overview: string;
+  posterPath: string | null;
+  backdropPath: string | null;
+  parts: MediaSummary[];
 }
 
 // UI-level sort state; abstract so a selection survives movie/tv switches
