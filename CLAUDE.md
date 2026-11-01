@@ -10,7 +10,7 @@ Marquee is a TMDB movie/TV discovery app: a React client (`client/`) and a minim
 
 Server (run from `server/`):
 ```bash
-npm run dev     # ts-node-dev on port 3223 (dev port hardcoded in the script)
+npm run dev     # tsx watch on port 3223 (dev port hardcoded in the script)
 npm run build   # tsc → dist/
 ```
 The server throws on boot if `TMDB_API_KEY` is missing from `server/.env` (see `server/.env.example`).
