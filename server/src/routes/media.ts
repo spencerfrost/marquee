@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { tmdbFetch, TMDBError } from '../tmdb';
+import { requireNumericParams } from '../params';
 
 const router = Router();
+requireNumericParams(router, 'id');
 
 // GET /api/media/:mediaType/:id
 router.get('/:mediaType/:id', async (req: Request, res: Response) => {

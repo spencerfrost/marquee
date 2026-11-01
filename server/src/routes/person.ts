@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { tmdbFetch, TMDBError } from '../tmdb';
+import { requireNumericParams } from '../params';
 
 const router = Router();
+requireNumericParams(router, 'id');
 
 // GET /api/person/search?query=
 // Must come before /:id so "search" isn't swallowed as a person id.

@@ -20,7 +20,8 @@ const LIST_PATHS: Record<string, string> = {
 // GET /api/trending/:list
 router.get('/:list', async (req: Request, res: Response) => {
   const { list } = req.params;
-  const path = LIST_PATHS[list];
+  // Own keys only, so inherited ones like `constructor` aren't treated as lists
+  const path = Object.prototype.hasOwnProperty.call(LIST_PATHS, list) ? LIST_PATHS[list] : undefined;
 
   if (!path) {
     return res.status(400).json({ error: `Unknown list "${list}"` });

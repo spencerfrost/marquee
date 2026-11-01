@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { tmdbFetch, TMDBError } from '../tmdb';
+import { requireNumericParams } from '../params';
 
 const router = Router();
+requireNumericParams(router, 'seriesId', 'seasonNumber');
 
 // GET /api/tv/:seriesId/season/:seasonNumber
 router.get('/:seriesId/season/:seasonNumber', async (req: Request, res: Response) => {
