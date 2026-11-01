@@ -23,13 +23,6 @@ export const GenreSelector: React.FC<Props> = ({ genres, selectedIds, onChange }
   const selectedGenres = genres.filter(g => selectedIds.includes(g.id));
   const availableGenres = genres.filter(g => !selectedIds.includes(g.id));
 
-  const handleSelect = (genreIdStr: string) => {
-    const id = parseInt(genreIdStr, 10);
-    if (!selectedIds.includes(id)) {
-      onChange([...selectedIds, id]);
-    }
-  };
-
   const handleRemove = (id: number) => {
     onChange(selectedIds.filter(i => i !== id));
   };
@@ -59,15 +52,21 @@ export const GenreSelector: React.FC<Props> = ({ genres, selectedIds, onChange }
       )}
 
       {/* Combobox Dropdown */}
-      <Combobox items={availableGenres} onValueChange={(value: string | null) => value ? handleSelect(value) : undefined}>
+      <Combobox
+        items={availableGenres}
+        multiple
+        value={selectedGenres}
+        onValueChange={(value: Genre[]) => onChange(value.map(g => g.id))}
+        itemToStringLabel={(g: Genre) => g.name}
+      >
         <ComboboxInput placeholder="Search or select a genre..." className="border-slate-700 bg-slate-800/80 text-sm text-slate-100" />
         <ComboboxContent className="border-slate-700 bg-slate-900 shadow-xl">
           <ComboboxEmpty className="text-slate-400">No genres found.</ComboboxEmpty>
           <ComboboxList>
             {(genre) => (
-              <ComboboxItem 
-                key={genre.id} 
-                value={genre.id.toString()}
+              <ComboboxItem
+                key={genre.id}
+                value={genre}
                 className="text-slate-300 hover:bg-slate-800 hover:text-slate-100 cursor-pointer"
               >
                 {genre.name}

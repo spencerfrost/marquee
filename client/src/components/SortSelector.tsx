@@ -9,15 +9,19 @@ import {
 } from './ui/select';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import type { SortDirection, SortField } from '@/utils/types';
+import { SORT_KEYS } from './DiscoverPage';
 
 const SORT_FIELDS: { value: SortField; label: string }[] = [
   { value: 'popularity', label: 'Popularity' },
   { value: 'rating', label: 'Rating' },
   { value: 'date', label: 'Release Date' },
   { value: 'title', label: 'Title' },
+  { value: 'voteCount', label: 'Vote Count' },
+  { value: 'revenue', label: 'Revenue' },
 ];
 
 interface SortSelectorProps {
+  mediaType: 'movie' | 'tv';
   sortField: SortField;
   sortDirection: SortDirection;
   onFieldChange: (field: SortField) => void;
@@ -25,18 +29,23 @@ interface SortSelectorProps {
 }
 
 export const SortSelector: React.FC<SortSelectorProps> = ({
+  mediaType,
   sortField,
   sortDirection,
   onFieldChange,
   onDirectionChange,
 }) => {
+  // e.g. revenue has no TMDB equivalent for /discover/tv — hide it rather
+  // than let it silently fall back to a wrong sort key.
+  const availableFields = SORT_FIELDS.filter((field) => SORT_KEYS[field.value][mediaType] !== null);
+
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
         Sort
       </span>
       <Select
-        items={SORT_FIELDS}
+        items={availableFields}
         value={sortField}
         onValueChange={(value) => onFieldChange(value as SortField)}
       >
@@ -44,7 +53,7 @@ export const SortSelector: React.FC<SortSelectorProps> = ({
           <SelectValue />
         </SelectTrigger>
         <SelectContent className="border-slate-700 bg-slate-900 text-slate-300 shadow-xl">
-          {SORT_FIELDS.map((field) => (
+          {availableFields.map((field) => (
             <SelectItem
               key={field.value}
               value={field.value}

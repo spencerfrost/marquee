@@ -1,13 +1,15 @@
 import type {
   TMDBDiscoverResponse,
   MediaDetail,
-  FetchMediaParams,
   MediaSummary,
   DiscoverFilterParams,
   Genre,
   CompanySummary,
   NetworkSummary,
+  KeywordSummary,
+  PersonSummary,
   CollectionDetail,
+  SearchHit,
   CastMember,
   CrewMember,
   Keyword,
@@ -218,23 +220,6 @@ export const fetchMediaDetails = async (
   };
 };
 
-export const fetchDiscoverMedia = async (
-  params: FetchMediaParams
-): Promise<TMDBDiscoverResponse> => {
-  const { mediaType, searchQuery, year, minRating, sortBy = 'popularity.desc' } = params;
-
-  const query = new URLSearchParams();
-  if (searchQuery) query.set('searchQuery', searchQuery);
-  if (year) query.set('year', String(year));
-  if (minRating) query.set('minRating', String(minRating));
-  query.set('sortBy', sortBy);
-
-  const response = await fetch(`/api/discover/${mediaType}?${query.toString()}`);
-  if (!response.ok) throw new Error("Failed to fetch data");
-  const data = await response.json();
-  return data as TMDBDiscoverResponse;
-};
-
 export const fetchSeasonDetails = async (seriesId: number, seasonNumber: number) => {
   const response = await fetch(`/api/tv/${seriesId}/season/${seasonNumber}`);
   if (!response.ok) throw new Error('Failed to fetch season details');
@@ -260,21 +245,43 @@ export const fetchPersonDetails = async (personId: number) => {
 export const fetchDiscoverMediaWithFilters = async (
   params: DiscoverFilterParams
 ): Promise<TMDBDiscoverResponse> => {
-  const { mediaType, searchQuery, year, minRating, minVoteCount, sortBy, genreIds, companyIds, networkIds, page } = params;
+  const {
+    mediaType, searchQuery, dateFrom, dateTo, minRating, minVoteCount, sortBy,
+    genreIds, companyIds, networkIds, page,
+    originalLanguage, originCountry, certification, runtimeMin, runtimeMax,
+    tvTypes, tvStatuses, keywordIds, excludeKeywordIds, personIds,
+    watchProviderIds, watchRegion,
+  } = params;
 
   const query = new URLSearchParams();
   if (searchQuery) query.set('searchQuery', searchQuery);
   if (page) query.set('page', String(page));
-  if (year) query.set('year', String(year));
+  if (dateFrom) query.set('dateFrom', dateFrom);
+  if (dateTo) query.set('dateTo', dateTo);
   if (minRating) query.set('minRating', String(minRating));
   // Not truthiness: an explicit 0 means "no floor" and must reach the server
   if (minVoteCount !== undefined) query.set('minVoteCount', String(minVoteCount));
   if (sortBy) query.set('sortBy', sortBy);
-  
+  if (originalLanguage) query.set('originalLanguage', originalLanguage);
+  if (originCountry) query.set('originCountry', originCountry);
+  if (certification) query.set('certification', certification);
+  if (runtimeMin !== undefined) query.set('runtimeMin', String(runtimeMin));
+  if (runtimeMax !== undefined) query.set('runtimeMax', String(runtimeMax));
+
   // Pipe = OR within a param; genres and companies are AND'd across params
   if (genreIds?.length) query.set('genreIds', genreIds.join('|'));
   if (companyIds?.length) query.set('companyIds', companyIds.join('|'));
   if (networkIds?.length) query.set('networkIds', networkIds.join('|'));
+  if (tvTypes?.length) query.set('tvTypes', tvTypes.join('|'));
+  if (tvStatuses?.length) query.set('tvStatuses', tvStatuses.join('|'));
+  if (keywordIds?.length) query.set('keywordIds', keywordIds.join('|'));
+  if (excludeKeywordIds?.length) query.set('excludeKeywordIds', excludeKeywordIds.join('|'));
+  if (personIds?.length) query.set('personIds', personIds.join('|'));
+  // Region-scoped — only meaningful (and only sent) together
+  if (watchProviderIds?.length && watchRegion) {
+    query.set('watchProviderIds', watchProviderIds.join('|'));
+    query.set('watchRegion', watchRegion);
+  }
 
   const response = await fetch(`/api/discover-filtered/${mediaType}?${query.toString()}`);
   if (!response.ok) throw new Error('Failed to fetch filtered discover data');
@@ -309,6 +316,27 @@ export const searchCompanies = async (query: string): Promise<CompanySummary[]> 
   }));
 };
 
+export const searchKeywords = async (query: string): Promise<KeywordSummary[]> => {
+  if (!query.trim()) return [];
+  const response = await fetch(`/api/keyword/search?query=${encodeURIComponent(query)}`);
+  if (!response.ok) throw new Error('Failed to search keywords');
+  const data = await response.json();
+  return (data.results || []).map((k: any) => ({ id: k.id, name: k.name }));
+};
+
+export const searchPeople = async (query: string): Promise<PersonSummary[]> => {
+  if (!query.trim()) return [];
+  const response = await fetch(`/api/person/search?query=${encodeURIComponent(query)}`);
+  if (!response.ok) throw new Error('Failed to search people');
+  const data = await response.json();
+  return (data.results || []).map((p: any) => ({
+    id: p.id,
+    name: p.name,
+    profilePath: p.profile_path ? `${POSTER_BASE_URL}${p.profile_path}` : null,
+    knownForDepartment: p.known_for_department || '',
+  }));
+};
+
 export const fetchCollectionDetails = async (id: number): Promise<CollectionDetail> => {
   const response = await fetch(`/api/collection/${id}`);
   if (!response.ok) throw new Error('Failed to fetch collection details');
@@ -332,9 +360,134 @@ export const fetchCollectionDetails = async (id: number): Promise<CollectionDeta
   };
 };
 
+// TV has no with_people discover param, so a TV person filter falls back to
+// rendering this credits list directly rather than narrowing the grid.
+export const fetchPersonTvCredits = async (personId: number): Promise<MediaSummary[]> => {
+  const response = await fetch(`/api/person/${personId}/tv_credits`);
+  if (!response.ok) throw new Error('Failed to fetch TV credits');
+  const data = await response.json();
+  const combined = [...(data.cast || []), ...(data.crew || [])];
+  const seen = new Set<number>();
+  const results: MediaSummary[] = [];
+  for (const credit of combined) {
+    if (seen.has(credit.id)) continue;
+    seen.add(credit.id);
+    results.push({
+      id: credit.id,
+      title: credit.name || credit.title || '',
+      rating: credit.vote_average || 0,
+      releaseDate: credit.first_air_date || '',
+      posterPath: credit.poster_path ? `${POSTER_BASE_URL}${credit.poster_path}` : null,
+      mediaType: 'tv',
+    });
+  }
+  return results.sort((a, b) => (b.releaseDate || '').localeCompare(a.releaseDate || ''));
+};
+
+export const searchMulti = async (query: string, page = 1): Promise<{ hits: SearchHit[]; totalPages: number; totalResults: number }> => {
+  if (!query.trim()) return { hits: [], totalPages: 0, totalResults: 0 };
+  const response = await fetch(`/api/search/multi?query=${encodeURIComponent(query)}&page=${page}`);
+  if (!response.ok) throw new Error('Failed to search');
+  const data = await response.json();
+
+  const hits: SearchHit[] = (data.results || []).reduce((acc: SearchHit[], item: any) => {
+    if (item.media_type === 'movie') {
+      acc.push({
+        kind: 'movie',
+        id: item.id,
+        title: item.title || '',
+        posterPath: item.poster_path ? `${POSTER_BASE_URL}${item.poster_path}` : null,
+        year: item.release_date ? item.release_date.slice(0, 4) : '',
+        rating: item.vote_average || 0,
+      });
+    } else if (item.media_type === 'tv') {
+      acc.push({
+        kind: 'tv',
+        id: item.id,
+        title: item.name || '',
+        posterPath: item.poster_path ? `${POSTER_BASE_URL}${item.poster_path}` : null,
+        year: item.first_air_date ? item.first_air_date.slice(0, 4) : '',
+        rating: item.vote_average || 0,
+      });
+    } else if (item.media_type === 'person') {
+      acc.push({
+        kind: 'person',
+        id: item.id,
+        name: item.name || '',
+        profilePath: item.profile_path ? `${POSTER_BASE_URL}${item.profile_path}` : null,
+        knownForDepartment: item.known_for_department || '',
+        knownFor: (item.known_for || []).map((k: any) => k.title || k.name).filter(Boolean),
+      });
+    } else if (item.media_type === 'collection') {
+      acc.push({
+        kind: 'collection',
+        id: item.id,
+        name: item.name || '',
+        posterPath: item.poster_path ? `${POSTER_BASE_URL}${item.poster_path}` : null,
+      });
+    }
+    // media_type values beyond movie/tv/person/collection are intentionally
+    // dropped here rather than trusted into the union.
+    return acc;
+  }, []);
+
+  return { hits, totalPages: data.total_pages || 0, totalResults: data.total_results || 0 };
+};
+
+// Mirrors LIST_PATHS in server/src/routes/trending.ts — one route fronts
+// every landing-page rail rather than six near-identical route files.
+export type TrendingList =
+  | 'trending-week'
+  | 'movie-now-playing'
+  | 'tv-on-the-air'
+  | 'movie-popular'
+  | 'movie-top-rated'
+  | 'movie-upcoming'
+  | 'tv-popular'
+  | 'tv-top-rated';
+
+export const fetchTrending = async (list: TrendingList): Promise<MediaSummary[]> => {
+  const response = await fetch(`/api/trending/${list}`);
+  if (!response.ok) throw new Error('Failed to fetch trending data');
+  const data = await response.json();
+
+  return (data.results || [])
+    // /trending/all/week mixes in person rows; every other list is
+    // already movie- or tv-only. Drop people rather than render blank cards.
+    .filter((item: any) => item.media_type !== 'person')
+    .map((item: any) => {
+      const mediaType: 'movie' | 'tv' =
+        item.media_type === 'tv' || item.media_type === 'movie'
+          ? item.media_type
+          : list.startsWith('tv') ? 'tv' : 'movie';
+      return {
+        id: item.id,
+        title: item.title || item.name || '',
+        rating: item.vote_average || 0,
+        releaseDate: item.release_date || item.first_air_date || '',
+        posterPath: item.poster_path ? `${POSTER_BASE_URL}${item.poster_path}` : null,
+        mediaType,
+      };
+    });
+};
+
 export const fetchWatchProviderRegions = async (): Promise<WatchRegion[]> => {
   const response = await fetch('/api/watch-providers/regions');
   if (!response.ok) throw new Error('Failed to fetch watch provider regions');
   const data = await response.json();
   return data.results || [];
+};
+
+export const fetchWatchProviders = async (
+  mediaType: 'movie' | 'tv',
+  region: string
+): Promise<WatchProviderEntry[]> => {
+  const response = await fetch(`/api/watch-providers/${mediaType}?watch_region=${encodeURIComponent(region)}`);
+  if (!response.ok) throw new Error('Failed to fetch watch providers');
+  const data = await response.json();
+  return (data.results || []).map((p: any) => ({
+    providerId: p.provider_id,
+    providerName: p.provider_name,
+    logoPath: p.logo_path ? `${LOGO_BASE_URL}${p.logo_path}` : null,
+  }));
 };

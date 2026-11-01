@@ -185,14 +185,6 @@ export interface PersonDetail {
   combined_credits?: PersonCombinedCredits;
 }
 
-export interface FetchMediaParams {
-  mediaType: "movie" | "tv";
-  searchQuery?: string;
-  year?: number;
-  minRating?: number;
-  sortBy?: string;
-}
-
 export interface Genre {
   id: number;
   name: string;
@@ -212,6 +204,18 @@ export interface NetworkSummary {
   name: string;
 }
 
+export interface KeywordSummary {
+  id: number;
+  name: string;
+}
+
+export interface PersonSummary {
+  id: number;
+  name: string;
+  profilePath: string | null;
+  knownForDepartment: string;
+}
+
 export interface CollectionSummary {
   id: number;
   name: string;
@@ -227,23 +231,54 @@ export interface CollectionDetail {
   parts: MediaSummary[];
 }
 
-// UI-level sort state; abstract so a selection survives movie/tv switches
-export type SortField = 'popularity' | 'rating' | 'date' | 'title';
+// Discriminated union returned by /search/multi. TMDB's media_type can be
+// values beyond these four — callers must default-case unknown kinds out
+// rather than trusting the union.
+export type SearchHit =
+  | { kind: 'movie'; id: number; title: string; posterPath: string | null; year: string; rating: number }
+  | { kind: 'tv'; id: number; title: string; posterPath: string | null; year: string; rating: number }
+  | {
+    kind: 'person';
+    id: number;
+    name: string;
+    profilePath: string | null;
+    knownForDepartment: string;
+    knownFor: string[];
+  }
+  | { kind: 'collection'; id: number; name: string; posterPath: string | null };
+
+// UI-level sort state; abstract so a selection survives movie/tv switches.
+// `revenue` is movie-only — TMDB has no revenue sort for /discover/tv.
+export type SortField = 'popularity' | 'rating' | 'date' | 'title' | 'revenue' | 'voteCount';
 export type SortDirection = 'asc' | 'desc';
 
 // TMDB sort_by keys. Movie and TV use different names for date and title sorts.
 export type DiscoverSortBy =
-  `${'popularity' | 'vote_average' | 'primary_release_date' | 'first_air_date' | 'title' | 'name'}.${SortDirection}`;
+  `${'popularity' | 'vote_average' | 'primary_release_date' | 'first_air_date' | 'title' | 'name' | 'revenue' | 'vote_count'}.${SortDirection}`;
 
 export interface DiscoverFilterParams {
   mediaType: 'movie' | 'tv';
   searchQuery?: string;
-  year?: number;
+  // 'YYYY-MM-DD'; mapped to primary_release_date (movie) or first_air_date (tv)
+  dateFrom?: string;
+  dateTo?: string;
   minRating?: number;
   minVoteCount?: number;    // 0 = no floor; undefined = server default (200 movie / 50 tv)
+  originalLanguage?: string; // unset = all languages
+  originCountry?: string;
+  certification?: string;  // movie only; server pins certification_country to US
+  runtimeMin?: number;      // minutes
+  runtimeMax?: number;
+  tvTypes?: number[];       // TV only; with_type
+  tvStatuses?: number[];    // TV only; with_status
   sortBy?: DiscoverSortBy;
   genreIds?: number[];      // AND logic, comma-joined for with_genres
   companyIds?: number[];    // AND logic, comma-joined for with_companies
   networkIds?: number[];    // OR logic, pipe-joined for with_networks; TV only
+  keywordIds?: number[];    // OR logic, pipe-joined for with_keywords
+  excludeKeywordIds?: number[]; // pipe-joined for without_keywords
+  personIds?: number[];     // OR logic, pipe-joined for with_people; movie only
+  watchProviderIds?: number[]; // OR logic, pipe-joined for with_watch_providers
+  watchRegion?: string;     // required alongside watchProviderIds; region-scoped
   page?: number;            // 1-based; TMDB caps at 500
 }
