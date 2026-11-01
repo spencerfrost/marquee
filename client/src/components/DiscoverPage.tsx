@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useNavigationType, useSearchParams } from 'react-router-dom';
 import { fetchDiscoverMediaWithFilters, fetchGenres, fetchPersonTvCredits, fetchWatchProviders, POSTER_BASE_URL } from '@/utils/api';
 import type {
   Genre,
@@ -172,29 +173,170 @@ function filtersReducer(state: DiscoverFilters, action: FilterAction): DiscoverF
   }
 }
 
+// Filters live in the URL so Back from a detail page lands on the same grid,
+// and searches can be bookmarked or shared. Only non-default values are
+// written. Named selections (companies, keywords…) are stored as `id:name`
+// so their badges render without a lookup; repeated params, since names can
+// contain commas. A URL with no params at all is the home-rails view, so an
+// unfiltered grid needs the explicit `all` marker.
+const ALL_MARKER = 'all';
+
+const NUMBER_LIST_PARAMS = {
+  genres: 'genreIds',
+  tvtype: 'tvTypes',
+  tvstatus: 'tvStatuses',
+  providers: 'watchProviderIds',
+} as const;
+
+const NAMED_LIST_PARAMS = {
+  company: 'companies',
+  network: 'networks',
+  keyword: 'keywords',
+  exclude: 'excludeKeywords',
+  person: 'people',
+} as const;
+
+function filtersToParams(filters: DiscoverFilters): URLSearchParams {
+  const params = new URLSearchParams();
+  const setIf = (key: string, value: string | number | null, unless?: string | number) => {
+    if (value !== null && value !== '' && value !== unless) params.set(key, String(value));
+  };
+
+  setIf('type', filters.mediaType, initialFilters.mediaType);
+  setIf('q', filters.searchQuery);
+  setIf('from', filters.releaseDateFrom);
+  setIf('to', filters.releaseDateTo);
+  setIf('rating', filters.minRating, 0);
+  setIf('votes', filters.minVoteCount);
+  setIf('rtmin', filters.runtimeMin);
+  setIf('rtmax', filters.runtimeMax);
+  setIf('lang', filters.originalLanguage);
+  setIf('country', filters.originCountry);
+  setIf('cert', filters.certification);
+  setIf('sort', filters.sortField, initialFilters.sortField);
+  setIf('dir', filters.sortDirection, initialFilters.sortDirection);
+
+  for (const [key, field] of Object.entries(NUMBER_LIST_PARAMS)) {
+    if (filters[field].length > 0) params.set(key, filters[field].join(','));
+  }
+  for (const [key, field] of Object.entries(NAMED_LIST_PARAMS)) {
+    for (const { id, name } of filters[field]) params.append(key, `${id}:${name}`);
+  }
+
+  if ([...params.keys()].length === 0) params.set(ALL_MARKER, '1');
+  return params;
+}
+
+function filtersFromParams(params: URLSearchParams): DiscoverFilters {
+  const num = (key: string): number | null => {
+    const raw = params.get(key);
+    const value = raw === null ? NaN : Number(raw);
+    return Number.isFinite(value) ? value : null;
+  };
+  const numList = (key: string): number[] =>
+    (params.get(key) ?? '').split(',').map(Number).filter(n => Number.isInteger(n) && n > 0);
+  const named = (key: string): { id: number; name: string }[] =>
+    params.getAll(key).flatMap(entry => {
+      const sep = entry.indexOf(':');
+      const id = Number(entry.slice(0, sep));
+      return sep > 0 && Number.isInteger(id) ? [{ id, name: entry.slice(sep + 1) }] : [];
+    });
+
+  const mediaType = params.get('type') === 'tv' ? 'tv' : 'movie';
+  const sortParam = params.get('sort');
+  const sortField = sortParam && sortParam in SORT_KEYS && SORT_KEYS[sortParam as SortField][mediaType] !== null
+    ? (sortParam as SortField)
+    : initialFilters.sortField;
+  const people = named('person').map(p => ({ ...p, profilePath: null, knownForDepartment: '' }));
+
+  return {
+    mediaType,
+    searchQuery: params.get('q') ?? '',
+    releaseDateFrom: params.get('from'),
+    releaseDateTo: params.get('to'),
+    minRating: num('rating') ?? 0,
+    minVoteCount: num('votes'),
+    runtimeMin: num('rtmin'),
+    runtimeMax: num('rtmax'),
+    originalLanguage: params.get('lang'),
+    originCountry: params.get('country'),
+    certification: params.get('cert'),
+    tvTypes: numList('tvtype'),
+    tvStatuses: numList('tvstatus'),
+    genreIds: numList('genres'),
+    companies: named('company').map(c => ({ ...c, logoPath: null })),
+    networks: named('network'),
+    sortField,
+    sortDirection: params.get('dir') === 'asc' ? 'asc' : 'desc',
+    keywords: named('keyword'),
+    excludeKeywords: named('exclude'),
+    people: mediaType === 'tv' ? people.slice(0, 1) : people,
+    watchProviderIds: numList('providers'),
+  };
+}
+
+// The last grid shown, kept across unmounts so Back from a detail page can
+// put back every loaded page and the scroll position instead of refetching
+// page 1 at the top. Keyed by the query string it was loaded for.
+let gridCache: {
+  key: string;
+  items: MediaSummary[];
+  page: number;
+  totalPages: number;
+  totalResults: number;
+  scrollY: number;
+} | null = null;
+
 export const DiscoverPage: React.FC = () => {
-  const [items, setItems] = useState<MediaSummary[]>([]);
+  // The URL is the source of truth for filters; the reducer still computes
+  // transitions and the result is written back as search params. `replace`
+  // so tweaking filters doesn't pile up history entries ahead of Back.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryKey = searchParams.toString();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filters = useMemo(() => filtersFromParams(searchParams), [queryKey]);
+
+  // On Back (a POP) to the query the cache was saved for, start from the
+  // cached grid instead of refetching page 1 — decided once per mount.
+  const navigationType = useNavigationType();
+  const [restored] = useState(() =>
+    navigationType === 'POP' && gridCache?.key === queryKey ? gridCache : null
+  );
+
+  const [items, setItems] = useState<MediaSummary[]>(restored?.items ?? []);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   // Pagination state — not filter state, kept separate so the reducer stays
   // focused on what drives a discover request.
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [totalResults, setTotalResults] = useState<number>(0);
+  const [page, setPage] = useState<number>(restored?.page ?? 1);
+  const [totalPages, setTotalPages] = useState<number>(restored?.totalPages ?? 0);
+  const [totalResults, setTotalResults] = useState<number>(restored?.totalResults ?? 0);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  const [filters, dispatch] = useReducer(filtersReducer, initialFilters);
+  // Runs after ScrollToTop's reset; rAF waits for the restored grid to paint.
+  useEffect(() => {
+    if (restored) requestAnimationFrame(() => window.scrollTo(0, restored.scrollY));
+  }, [restored]);
   const [genres, setGenres] = useState<Genre[]>([]);
 
   // `/` opens on trending rails, not an unfiltered discover query — the grid
-  // (and its fetch) only kicks in once the user actually touches a filter.
-  const [browsing, setBrowsing] = useState<boolean>(true);
+  // (and its fetch) only kicks in once the user actually touches a filter,
+  // which always writes at least one param.
+  const browsing = queryKey === '';
+
+  // Tracks the latest filters synchronously so two dispatches in one tick
+  // build on each other rather than both on the last render's value.
+  const filtersRef = useRef(filters);
+  filtersRef.current = filters;
+  const commitFilters = useCallback((next: DiscoverFilters) => {
+    filtersRef.current = next;
+    setSearchParams(filtersToParams(next), { replace: true });
+  }, [setSearchParams]);
   const trackedDispatch = useCallback((action: FilterAction) => {
-    setBrowsing(false);
-    dispatch(action);
-  }, []);
+    commitFilters(filtersReducer(filtersRef.current, action));
+  }, [commitFilters]);
 
   useEffect(() => {
     fetchGenres(filters.mediaType).then(setGenres).catch(console.error);
@@ -223,17 +365,17 @@ export const DiscoverPage: React.FC = () => {
   // Providers are region-scoped — a selection made in one region may match
   // nothing (or a different service) in another, so drop it on region change
   // rather than silently sending a filter that no longer means what the user
-  // picked. Not routed through trackedDispatch: switching regions shouldn't
-  // by itself pull the page out of the browsing/home-rails state.
+  // picked. A provider selection only exists off the home rails, so this
+  // never pulls the page out of the browsing state.
   const prevWatchRegionRef = useRef(watchRegion);
   useEffect(() => {
     if (prevWatchRegionRef.current !== watchRegion) {
       prevWatchRegionRef.current = watchRegion;
       if (filters.watchProviderIds.length > 0) {
-        dispatch({ type: 'SET_WATCH_PROVIDER_IDS', value: [] });
+        trackedDispatch({ type: 'SET_WATCH_PROVIDER_IDS', value: [] });
       }
     }
-  }, [watchRegion, filters.watchProviderIds]);
+  }, [watchRegion, filters.watchProviderIds, trackedDispatch]);
 
   const fetchPage = useCallback(async (pageToFetch: number): Promise<{
     results: MediaSummary[];
@@ -358,9 +500,29 @@ export const DiscoverPage: React.FC = () => {
     loadMoreRef.current = loadMore;
   }, [loadMore]);
 
+  // Remembers which query the grid holds, so a restored grid isn't refetched
+  // on mount (and StrictMode's repeat effect run doesn't fetch twice).
+  const loadedKeyRef = useRef<string | null>(restored ? queryKey : null);
   useEffect(() => {
-    if (!browsing) fetchData();
-  }, [fetchData, browsing]);
+    if (browsing || loadedKeyRef.current === queryKey) return;
+    loadedKeyRef.current = queryKey;
+    fetchData();
+  }, [fetchData, browsing, queryKey]);
+
+  // Snapshot for the gridCache restore above; scroll is read at unmount, when
+  // the user leaves for a detail page. The ref keeps the cleanup from
+  // capturing a stale grid. A layout effect, because a passive cleanup runs
+  // after the grid's DOM is gone and scrollY has clamped to the new page.
+  const gridSnapshotRef = useRef<Omit<NonNullable<typeof gridCache>, 'scrollY'> | null>(null);
+  useEffect(() => {
+    gridSnapshotRef.current = browsing || loading
+      ? null
+      : { key: queryKey, items, page, totalPages, totalResults };
+  }, [browsing, loading, queryKey, items, page, totalPages, totalResults]);
+  useLayoutEffect(() => () => {
+    const snapshot = gridSnapshotRef.current;
+    gridCache = snapshot ? { ...snapshot, scrollY: window.scrollY } : null;
+  }, []);
 
   // Load the next page when the sentinel below the grid approaches the
   // viewport. Created once; loadMore's guards make extra firings harmless.
@@ -410,7 +572,7 @@ export const DiscoverPage: React.FC = () => {
           dispatch={trackedDispatch}
           genres={genres}
           watchProviderOptions={watchProviderOptions}
-          onSearch={() => setBrowsing(false)}
+          onSearch={() => { if (browsing) commitFilters(filtersRef.current); }}
           loading={loading}
         />
 
