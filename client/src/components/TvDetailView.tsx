@@ -24,12 +24,15 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
 
   // Fetch the main TV show details
   useEffect(() => {
+    // Ignore a slow response for a show the user has already navigated away from
+    let cancelled = false;
     const fetchTvShow = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const data = await fetchMediaDetails('tv', id);
+        if (cancelled) return;
         setShow(data);
 
         // Automatically select season 1 (or the first available season) if it exists
@@ -38,32 +41,41 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
           setSelectedSeasonNumber(firstSeason.season_number);
         }
       } catch (err) {
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchTvShow();
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   // Fetch episodes whenever the selected season changes
   useEffect(() => {
+    let cancelled = false;
     const fetchEpisodes = async () => {
       if (selectedSeasonNumber === null) return;
 
       setLoadingEpisodes(true);
       try {
         const seasonData = await fetchSeasonDetails(id, selectedSeasonNumber);
+        if (cancelled) return;
         setEpisodes(seasonData.episodes || []);
       } catch (err) {
         console.error("Failed to load episodes", err);
       } finally {
-        setLoadingEpisodes(false);
+        if (!cancelled) setLoadingEpisodes(false);
       }
     };
 
     fetchEpisodes();
+    return () => {
+      cancelled = true;
+    };
   }, [id, selectedSeasonNumber]);
 
   if (loading) return <div className="text-center py-12 text-gray-400">Loading TV show...</div>;

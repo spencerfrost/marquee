@@ -15,18 +15,25 @@ const PersonDetailView: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
+    let cancelled = false;
     const loadPerson = async () => {
       setLoading(true);
+      setError(null);
       try {
         const data = await fetchPersonDetails(Number(id));
+        if (cancelled) return;
         setPerson(data);
       } catch (err) {
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : 'Failed to load person');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     loadPerson();
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   if (loading) {

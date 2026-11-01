@@ -19,21 +19,28 @@ const MovieDetailView: React.FC<MovieDetailViewProps> = ({ id }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Ignore a slow response for a title the user has already navigated away from
+    let cancelled = false;
     const fetchMovie = async () => {
       setLoading(true);
       setError(null);
       
       try {
         const data = await fetchMediaDetails('movie', id);
+        if (cancelled) return;
         setMovie(data);
       } catch (err) {
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchMovie();
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   if (loading) return <div className="text-center py-12 text-gray-400">Loading movie...</div>;

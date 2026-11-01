@@ -65,14 +65,22 @@ export const SearchResultsPage: React.FC = () => {
       setHits([]);
       return;
     }
+    let cancelled = false;
     setLoading(true);
     setError(null);
     searchMulti(query)
       .then(({ hits: results }) => {
-        setHits(results);
+        if (!cancelled) setHits(results);
       })
-      .catch((err) => setError(err instanceof Error ? err.message : 'Search failed'))
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Search failed');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [query]);
 
   const grouped = GROUP_ORDER.map(kind => ({

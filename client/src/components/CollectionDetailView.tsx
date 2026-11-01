@@ -15,18 +15,25 @@ const CollectionDetailView: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
+    let cancelled = false;
     const load = async () => {
       setLoading(true);
+      setError(null);
       try {
         const data = await fetchCollectionDetails(Number(id));
+        if (cancelled) return;
         setCollection(data);
       } catch (err) {
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : 'Failed to load collection');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     load();
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   if (loading) {

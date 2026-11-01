@@ -14,18 +14,25 @@ const EpisodeDetailView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const loadEpisode = async () => {
       setLoading(true);
+      setError(null);
       try {
         const data = await fetchEpisodeDetails(Number(seriesId), Number(seasonNumber), Number(episodeNumber));
+        if (cancelled) return;
         setEpisode(data);
       } catch (err) {
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : 'Failed to load episode');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     loadEpisode();
+    return () => {
+      cancelled = true;
+    };
   }, [seriesId, seasonNumber, episodeNumber]);
 
   if (loading) {
