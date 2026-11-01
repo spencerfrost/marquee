@@ -3,16 +3,14 @@ import { useParams } from 'react-router-dom';
 import MovieDetailView from './MovieDetailView';
 import TvDetailView from './TvDetailView';
 import { DetailContainer } from './DetailContainer';
+import { NotFoundPage } from './NotFoundPage';
 
 const DetailPage: React.FC = () => {
     const { mediaType, id } = useParams<{ mediaType: string; id: string }>();
 
-    if (!id || (mediaType !== 'movie' && mediaType !== 'tv')) {
-        return (
-            <div className="min-h-screen bg-gray-900 text-white p-4 flex items-center justify-center">
-                <p className="text-xl text-gray-400">Invalid URL parameters.</p>
-            </div>
-        );
+    // /:mediaType/:id catches any two-segment path, so this doubles as the 404
+    if (!id || !/^\d+$/.test(id) || (mediaType !== 'movie' && mediaType !== 'tv')) {
+        return <NotFoundPage />;
     }
 
     const numericId = parseInt(id, 10);

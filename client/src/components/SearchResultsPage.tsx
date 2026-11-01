@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { searchMulti } from '@/utils/api';
+import { useDocumentTitle } from '@/utils/useDocumentTitle';
 import type { SearchHit } from '@/utils/types';
 import { User } from 'lucide-react';
 
@@ -55,6 +56,7 @@ const HitCard: React.FC<{ hit: SearchHit }> = ({ hit }) => (
 export const SearchResultsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query') || '';
+  useDocumentTitle(query.trim() ? `Search: ${query.trim()}` : 'Search');
 
   const [hits, setHits] = useState<SearchHit[]>([]);
   const [loading, setLoading] = useState(false);

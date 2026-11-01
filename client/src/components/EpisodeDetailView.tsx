@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchEpisodeDetails } from '@/utils/api';
 import { formatDate } from '@/utils/date';
+import { useDocumentTitle } from '@/utils/useDocumentTitle';
 import { Alert, AlertDescription } from './ui/alert';
 import type { EpisodeDetail } from '@/utils/types';
 import { DetailContainer } from './DetailContainer';
@@ -34,6 +35,8 @@ const EpisodeDetailView: React.FC = () => {
       cancelled = true;
     };
   }, [seriesId, seasonNumber, episodeNumber]);
+
+  useDocumentTitle(episode ? `S${seasonNumber}E${episodeNumber} · ${episode.name}` : undefined);
 
   if (loading) {
     return (

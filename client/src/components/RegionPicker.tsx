@@ -10,7 +10,7 @@ import {
 } from './ui/select';
 
 const STORAGE_KEY = 'marquee:watchRegion';
-// The deploy is Canadian — see the Seerr link in MediaCard.tsx.
+// The live deploy is Canadian.
 const DEFAULT_REGION = 'CA';
 
 // Module-level so every component reading the region (RegionPicker itself,

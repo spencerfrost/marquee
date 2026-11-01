@@ -7,6 +7,7 @@ import PersonDetailView from "./components/PersonDetailView";
 import CollectionDetailView from "./components/CollectionDetailView";
 import { SearchResultsPage } from "./components/SearchResultsPage";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { NotFoundPage } from "./components/NotFoundPage";
 
 const App: React.FC = () => {
   return (
@@ -26,6 +27,7 @@ const App: React.FC = () => {
           path="/tv/:seriesId/season/:seasonNumber/episode/:episodeNumber" 
           element={<EpisodeDetailView />} 
         />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );

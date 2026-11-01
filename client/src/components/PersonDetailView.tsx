@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchPersonDetails } from '@/utils/api';
+import { useDocumentTitle } from '@/utils/useDocumentTitle';
 import type { PersonDetail } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { DetailContainer } from './DetailContainer';
@@ -35,6 +36,8 @@ const PersonDetailView: React.FC = () => {
       cancelled = true;
     };
   }, [id]);
+
+  useDocumentTitle(person?.name);
 
   if (loading) {
     return (

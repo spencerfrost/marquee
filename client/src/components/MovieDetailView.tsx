@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchMediaDetails } from '@/utils/api';
 import { formatDate, releaseYear } from '@/utils/date';
+import { useDocumentTitle } from '@/utils/useDocumentTitle';
 import type { MediaDetail } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
@@ -43,6 +44,8 @@ const MovieDetailView: React.FC<MovieDetailViewProps> = ({ id }) => {
       cancelled = true;
     };
   }, [id]);
+
+  useDocumentTitle(movie?.title);
 
   if (loading) return <div className="text-center py-12 text-gray-400">Loading movie...</div>;
   if (error) return <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>;
@@ -194,8 +197,9 @@ return (
         </h3>
         <div className="aspect-video w-full overflow-hidden rounded-lg bg-black">
           <iframe
-            src={`https://www.youtube.com/embed/${movie.trailerKey}`}
+            src={`https://www.youtube-nocookie.com/embed/${movie.trailerKey}`}
             title="Trailer"
+            loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="h-full w-full"

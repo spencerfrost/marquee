@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchCollectionDetails } from '@/utils/api';
+import { useDocumentTitle } from '@/utils/useDocumentTitle';
 import type { CollectionDetail } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
 import { DetailContainer } from './DetailContainer';
@@ -35,6 +36,8 @@ const CollectionDetailView: React.FC = () => {
       cancelled = true;
     };
   }, [id]);
+
+  useDocumentTitle(collection?.name);
 
   if (loading) {
     return (

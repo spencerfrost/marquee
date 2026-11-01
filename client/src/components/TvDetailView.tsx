@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchMediaDetails, fetchSeasonDetails } from '@/utils/api';
+import { useDocumentTitle } from '@/utils/useDocumentTitle';
 import { formatDate, releaseYear } from '@/utils/date';
 import type { MediaDetail, TvSeason, TvEpisode } from '@/utils/types';
 import { Alert, AlertDescription } from './ui/alert';
@@ -78,6 +79,8 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
       cancelled = true;
     };
   }, [id, selectedSeasonNumber]);
+
+  useDocumentTitle(show?.name);
 
   if (loading) return <div className="text-center py-12 text-gray-400">Loading TV show...</div>;
   if (error) return <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>;
@@ -312,8 +315,9 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
           </h3>
           <div className="aspect-video w-full overflow-hidden rounded-lg bg-black">
             <iframe
-              src={`https://www.youtube.com/embed/${show.trailerKey}`}
+              src={`https://www.youtube-nocookie.com/embed/${show.trailerKey}`}
               title="Trailer"
+              loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="h-full w-full"

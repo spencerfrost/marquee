@@ -2,6 +2,7 @@ import type { MediaSummary } from '@/utils/types';
 import { releaseYear } from '@/utils/date';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSeerrUrl } from './SeerrSettings';
 
 interface MediaCardProps {
   item: MediaSummary;
@@ -9,7 +10,8 @@ interface MediaCardProps {
 
 const MediaCard: React.FC<MediaCardProps> = ({ item }) => {
   const tmdbUrl = `https://www.themoviedb.org/${item.mediaType}/${item.id}`;
-  const seerrUrl = `https://seerr.mrspinn.ca/${item.mediaType}/${item.id}`;
+  const seerrBase = useSeerrUrl();
+  const seerrUrl = seerrBase && `${seerrBase}/${item.mediaType}/${item.id}`;
   const detailPath = `/${item.mediaType}/${item.id}`;
 
   // Circular score ring math
@@ -99,16 +101,18 @@ const MediaCard: React.FC<MediaCardProps> = ({ item }) => {
             className="h-4 w-4 rounded-sm"
           />
         </a>
-        <a
-          href={seerrUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="View on Seerr"
-          onClick={handleStopPropagation}
-          className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 ring-1 ring-white/10 backdrop-blur-sm transition hover:ring-white/30"
-        >
-          <img src="https://seerr.dev/os_logo_filled.svg" alt="Seerr" className="h-4 w-4" />
-        </a>
+        {seerrUrl && (
+          <a
+            href={seerrUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View on Seerr"
+            onClick={handleStopPropagation}
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 ring-1 ring-white/10 backdrop-blur-sm transition hover:ring-white/30"
+          >
+            <img src="https://seerr.dev/os_logo_filled.svg" alt="Seerr" className="h-4 w-4" />
+          </a>
+        )}
       </div>
 
       {/* Title and metadata */}

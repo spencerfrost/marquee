@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigationType, useSearchParams } from 'react-router-dom';
 import { fetchDiscoverMediaWithFilters, fetchGenres, fetchPersonTvCredits, fetchWatchProviders, POSTER_BASE_URL } from '@/utils/api';
+import { useDocumentTitle } from '@/utils/useDocumentTitle';
 import type {
   Genre,
   MediaSummary,
@@ -19,6 +20,7 @@ import { SortSelector } from './SortSelector';
 import { OmniSearch } from './OmniSearch';
 import { HomeRails } from './HomeRails';
 import { RegionPicker, useWatchRegion } from './RegionPicker';
+import { SeerrSettings } from './SeerrSettings';
 import { Alert, AlertDescription } from './ui/alert';
 
 // TMDB uses different sort_by keys for movies vs TV; the UI stores the
@@ -294,6 +296,7 @@ let gridCache: {
 } | null = null;
 
 export const DiscoverPage: React.FC = () => {
+  useDocumentTitle();
   // The URL is the source of truth for filters; the reducer still computes
   // transitions and the result is written back as search params. `replace`
   // so tweaking filters doesn't pile up history entries ahead of Back.
@@ -570,6 +573,7 @@ export const DiscoverPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <OmniSearch />
             <RegionPicker />
+            <SeerrSettings />
           </div>
         </header>
 
