@@ -35,3 +35,8 @@ server/dist/
 client/build/
 client/.vite/
 client-bak
+
+# Tool directories
+.serena/
+.playwright-mcp/
+marquee.json
