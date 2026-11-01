@@ -1,17 +1,17 @@
 import { Router, Request, Response } from 'express';
-import { tmdbFetch, TMDBError } from '../tmdb';
+import { tmdbFetch } from '../tmdb';
+import { sendError } from '../errors';
 
 const router = Router();
 
 // GET /api/watch-providers/regions
 // Must come before /:mediaType so "regions" isn't swallowed as a media type.
-router.get('/regions', async (_req: Request, res: Response) => {
+router.get('/regions', async (req: Request, res: Response) => {
   try {
     const data = await tmdbFetch('/watch/providers/regions', { language: 'en-US' });
     res.json(data);
   } catch (err) {
-    const status = err instanceof TMDBError ? err.status : 500;
-    res.status(status).json({ error: 'Failed to fetch watch provider regions' });
+    sendError(req, res, err, 'Failed to fetch watch provider regions');
   }
 });
 
@@ -31,8 +31,7 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
     });
     res.json(data);
   } catch (err) {
-    const status = err instanceof TMDBError ? err.status : 500;
-    res.status(status).json({ error: 'Failed to fetch watch providers' });
+    sendError(req, res, err, 'Failed to fetch watch providers');
   }
 });
 

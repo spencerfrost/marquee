@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { tmdbFetch, TMDBError } from '../tmdb';
+import { tmdbFetch } from '../tmdb';
+import { sendError } from '../errors';
 
 const router = Router();
 
@@ -89,8 +90,7 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
 
     res.json(data);
   } catch (err) {
-    const status = err instanceof TMDBError ? err.status : 500;
-    res.status(status).json({ error: 'Failed to fetch filtered discover data' });
+    sendError(req, res, err, 'Failed to fetch filtered discover data');
   }
 });
 

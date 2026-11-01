@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { gunzipSync } from 'node:zlib';
+import { sendError } from '../errors';
 
 // TMDB has no /search/network endpoint (probed 2026-07-04: 404), but it
 // publishes a daily export of every network id+name. We download that file
@@ -98,7 +99,7 @@ router.get('/search', async (req: Request, res: Response) => {
 
     res.json({ results: [...prefixMatches, ...substringMatches].slice(0, MAX_RESULTS) });
   } catch (err) {
-    res.status(502).json({ error: 'Failed to load network list' });
+    sendError(req, res, err, 'Failed to load network list', 502);
   }
 });
 

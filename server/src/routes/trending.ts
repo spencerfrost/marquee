@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { tmdbFetch, TMDBError } from '../tmdb';
+import { tmdbFetch } from '../tmdb';
+import { sendError } from '../errors';
 
 const router = Router();
 
@@ -31,8 +32,7 @@ router.get('/:list', async (req: Request, res: Response) => {
     const data = await tmdbFetch(path, { language: 'en-US', page: 1 });
     res.json(data);
   } catch (err) {
-    const status = err instanceof TMDBError ? err.status : 500;
-    res.status(status).json({ error: 'Failed to fetch trending data' });
+    sendError(req, res, err, 'Failed to fetch trending data');
   }
 });
 
