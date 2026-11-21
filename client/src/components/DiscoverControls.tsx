@@ -124,7 +124,7 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   // Draft input, decoupled from the committed filters.searchQuery so typing
-  // doesn't fire a request per keystroke. Committed on Search/Enter, or
+  // doesn't fire a request per keystroke. Committed on Apply/Enter, or
   // ~400ms after the user stops typing — dispatch (trackedDispatch) already
   // flips `browsing` false as a side effect, so committing alone is enough
   // to leave the home rails and trigger a fetch.
@@ -198,7 +198,7 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
     <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-black/30 backdrop-blur-md transition-all duration-300">
       <div className="flex flex-col gap-4">
 
-        {/* Top Row: Media Type, Search, & Actions */}
+        {/* Top Row: Media Type, Title filter, & Actions */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end">
 
           <div className="flex flex-col gap-1.5 shrink-0">
@@ -220,13 +220,15 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
           </div>
 
           <div className="flex flex-grow flex-col gap-1.5">
-            <Label htmlFor="search" className="text-xs font-medium uppercase tracking-wide text-slate-500">
-              Search
+            {/* A filter on the grid, not site search — that's OmniSearch in
+                the header, which covers movies, TV and people at once. */}
+            <Label htmlFor="title-filter" className="text-xs font-medium uppercase tracking-wide text-slate-500">
+              Title contains
             </Label>
             <Input
-              id="search"
+              id="title-filter"
               type="text"
-              placeholder="Search by title, e.g. Batman..."
+              placeholder="Filter by title, e.g. Batman…"
               value={searchDraft}
               onChange={(e) => setSearchDraft(e.target.value)}
               onKeyDown={(e) => {
@@ -242,7 +244,7 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
               disabled={loading}
               className="flex-1 bg-amber-500 text-slate-950 hover:bg-amber-400 disabled:opacity-50 md:w-auto"
             >
-              {loading ? 'Searching…' : 'Search'}
+              {loading ? 'Applying…' : 'Apply'}
             </Button>
 
             <Button
