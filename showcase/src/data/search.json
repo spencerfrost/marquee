@@ -1,0 +1,145 @@
+{
+  "query": "hardy",
+  "hits": [
+    {
+      "kind": "tv",
+      "id": 112945,
+      "title": "The Hardy Boys",
+      "sub": "2021",
+      "poster": "posters/tv-112945.jpg"
+    },
+    {
+      "kind": "person",
+      "id": 2524,
+      "title": "Tom Hardy",
+      "sub": "Acting",
+      "poster": "posters/person-2524.jpg"
+    },
+    {
+      "kind": "tv",
+      "id": 117523,
+      "title": "Laurel & Hardy",
+      "sub": "1966",
+      "poster": "posters/tv-117523.jpg"
+    },
+    {
+      "kind": "tv",
+      "id": 22068,
+      "title": "The Hardy Boys",
+      "sub": "1956",
+      "poster": "posters/tv-22068.jpg"
+    },
+    {
+      "kind": "tv",
+      "id": 2928,
+      "title": "The Hardy Boys / Nancy Drew Mysteries",
+      "sub": "1977",
+      "poster": "posters/tv-2928.jpg"
+    },
+    {
+      "kind": "tv",
+      "id": 61906,
+      "title": "Lutz & Hardy",
+      "sub": "1994",
+      "poster": null
+    },
+    {
+      "kind": "tv",
+      "id": 21968,
+      "title": "The Hardy Boys",
+      "sub": "1995",
+      "poster": "posters/tv-21968.jpg"
+    },
+    {
+      "kind": "tv",
+      "id": 21493,
+      "title": "Hardy Bucks",
+      "sub": "2010",
+      "poster": "posters/tv-21493.jpg"
+    },
+    {
+      "kind": "tv",
+      "id": 247869,
+      "title": "Lippy the Lion & Hardy Har Har",
+      "sub": "1962",
+      "poster": "posters/tv-247869.jpg"
+    },
+    {
+      "kind": "person",
+      "id": 31929,
+      "title": "Thomas Hardy",
+      "sub": "Writing",
+      "poster": "posters/person-31929.jpg"
+    },
+    {
+      "kind": "movie",
+      "id": 513036,
+      "title": "Laurel & Hardy - Highlights",
+      "sub": "2002",
+      "poster": "posters/movie-513036.jpg"
+    },
+    {
+      "kind": "tv",
+      "id": 28088,
+      "title": "The Hardy Boys",
+      "sub": "1969",
+      "poster": "posters/tv-28088.jpg"
+    },
+    {
+      "kind": "person",
+      "id": 1452045,
+      "title": "Ben Hardy",
+      "sub": "Acting",
+      "poster": "posters/person-1452045.jpg"
+    },
+    {
+      "kind": "person",
+      "id": 2970860,
+      "title": "Lauryn Hardy",
+      "sub": "Acting",
+      "poster": "posters/person-2970860.jpg"
+    },
+    {
+      "kind": "movie",
+      "id": 1376555,
+      "title": "Hardy",
+      "sub": "",
+      "poster": null
+    },
+    {
+      "kind": "person",
+      "id": 23076,
+      "title": "Robert Hardy",
+      "sub": "Acting",
+      "poster": "posters/person-23076.jpg"
+    },
+    {
+      "kind": "person",
+      "id": 78057,
+      "title": "Oliver Hardy",
+      "sub": "Acting",
+      "poster": "posters/person-78057.jpg"
+    },
+    {
+      "kind": "movie",
+      "id": 554368,
+      "title": "The Discreet Françoise Hardy",
+      "sub": "2016",
+      "poster": "posters/movie-554368.jpg"
+    },
+    {
+      "kind": "person",
+      "id": 1578870,
+      "title": "Phill Hardy",
+      "sub": "Camera",
+      "poster": null
+    },
+    {
+      "kind": "movie",
+      "id": 43846,
+      "title": "Love Finds Andy Hardy",
+      "sub": "1938",
+      "poster": "posters/movie-43846.jpg"
+    }
+  ]
+}

@@ -1,0 +1,568 @@
+{
+  "start": {
+    "label": "Movies",
+    "total": 15204,
+    "items": [
+      {
+        "id": 1726,
+        "mediaType": "movie",
+        "title": "Iron Man",
+        "year": "2008",
+        "rating": 7.7,
+        "poster": "posters/movie-1726.jpg"
+      },
+      {
+        "id": 1368337,
+        "mediaType": "movie",
+        "title": "The Odyssey",
+        "year": "2026",
+        "rating": 8,
+        "poster": "posters/movie-1368337.jpg"
+      },
+      {
+        "id": 1263337,
+        "mediaType": "movie",
+        "title": "Heart of the Beast",
+        "year": "2026",
+        "rating": 7.8,
+        "poster": "posters/movie-1263337.jpg"
+      },
+      {
+        "id": 1400837,
+        "mediaType": "movie",
+        "title": "Other Mommy",
+        "year": "2026",
+        "rating": 6.436,
+        "poster": "posters/movie-1400837.jpg"
+      },
+      {
+        "id": 969681,
+        "mediaType": "movie",
+        "title": "Spider-Man: Brand New Day",
+        "year": "2026",
+        "rating": 8.458,
+        "poster": "posters/movie-969681.jpg"
+      },
+      {
+        "id": 1423191,
+        "mediaType": "movie",
+        "title": "Resident Evil",
+        "year": "2026",
+        "rating": 7.533,
+        "poster": "posters/movie-1423191.jpg"
+      },
+      {
+        "id": 1058424,
+        "mediaType": "movie",
+        "title": "Hope",
+        "year": "2026",
+        "rating": 6.8,
+        "poster": "posters/movie-1058424.jpg"
+      },
+      {
+        "id": 1507696,
+        "mediaType": "movie",
+        "title": "Apocalypse Z: New World",
+        "year": "2026",
+        "rating": 6.217,
+        "poster": "posters/movie-1507696.jpg"
+      },
+      {
+        "id": 687163,
+        "mediaType": "movie",
+        "title": "Project Hail Mary",
+        "year": "2026",
+        "rating": 8.622,
+        "poster": "posters/movie-687163.jpg"
+      },
+      {
+        "id": 1294189,
+        "mediaType": "movie",
+        "title": "The Mongoose",
+        "year": "2026",
+        "rating": 6.46,
+        "poster": "posters/movie-1294189.jpg"
+      },
+      {
+        "id": 1381071,
+        "mediaType": "movie",
+        "title": "Godzilla Minus Zero",
+        "year": "2026",
+        "rating": 7.692,
+        "poster": "posters/movie-1381071.jpg"
+      },
+      {
+        "id": 1422041,
+        "mediaType": "movie",
+        "title": "LA BOLA NEGRA",
+        "year": "2026",
+        "rating": 7.933,
+        "poster": "posters/movie-1422041.jpg"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "label": "TV Shows",
+      "total": 7125,
+      "items": [
+        {
+          "id": 1413,
+          "mediaType": "tv",
+          "title": "American Horror Story",
+          "year": "2011",
+          "rating": 8.078,
+          "poster": "posters/tv-1413.jpg"
+        },
+        {
+          "id": 1434,
+          "mediaType": "tv",
+          "title": "Family Guy",
+          "year": "1999",
+          "rating": 7.418,
+          "poster": "posters/tv-1434.jpg"
+        },
+        {
+          "id": 1622,
+          "mediaType": "tv",
+          "title": "Supernatural",
+          "year": "2005",
+          "rating": 8.316,
+          "poster": "posters/tv-1622.jpg"
+        },
+        {
+          "id": 5920,
+          "mediaType": "tv",
+          "title": "The Mentalist",
+          "year": "2008",
+          "rating": 8.42,
+          "poster": "posters/tv-5920.jpg"
+        },
+        {
+          "id": 32573,
+          "mediaType": "tv",
+          "title": "Strike Back",
+          "year": "2010",
+          "rating": 7.409,
+          "poster": "posters/tv-32573.jpg"
+        },
+        {
+          "id": 84773,
+          "mediaType": "tv",
+          "title": "The Lord of the Rings: The Rings of Power",
+          "year": "2022",
+          "rating": 7.222,
+          "poster": "posters/tv-84773.jpg"
+        },
+        {
+          "id": 4620,
+          "mediaType": "tv",
+          "title": "Eureka",
+          "year": "2006",
+          "rating": 7.724,
+          "poster": "posters/tv-4620.jpg"
+        },
+        {
+          "id": 60735,
+          "mediaType": "tv",
+          "title": "The Flash",
+          "year": "2014",
+          "rating": 7.737,
+          "poster": "posters/tv-60735.jpg"
+        },
+        {
+          "id": 76331,
+          "mediaType": "tv",
+          "title": "Succession",
+          "year": "2018",
+          "rating": 8.307,
+          "poster": "posters/tv-76331.jpg"
+        },
+        {
+          "id": 37678,
+          "mediaType": "tv",
+          "title": "The Voice",
+          "year": "2011",
+          "rating": 5.853,
+          "poster": "posters/tv-37678.jpg"
+        },
+        {
+          "id": 1100,
+          "mediaType": "tv",
+          "title": "How I Met Your Mother",
+          "year": "2005",
+          "rating": 8.1,
+          "poster": "posters/tv-1100.jpg"
+        },
+        {
+          "id": 18347,
+          "mediaType": "tv",
+          "title": "Community",
+          "year": "2009",
+          "rating": 8,
+          "poster": "posters/tv-18347.jpg"
+        }
+      ]
+    },
+    {
+      "label": "Genres: Drama + Sci-Fi & Fantasy (All)",
+      "total": 913,
+      "items": [
+        {
+          "id": 1413,
+          "mediaType": "tv",
+          "title": "American Horror Story",
+          "year": "2011",
+          "rating": 8.078,
+          "poster": "posters/tv-1413.jpg"
+        },
+        {
+          "id": 1622,
+          "mediaType": "tv",
+          "title": "Supernatural",
+          "year": "2005",
+          "rating": 8.316,
+          "poster": "posters/tv-1622.jpg"
+        },
+        {
+          "id": 4620,
+          "mediaType": "tv",
+          "title": "Eureka",
+          "year": "2006",
+          "rating": 7.724,
+          "poster": "posters/tv-4620.jpg"
+        },
+        {
+          "id": 60735,
+          "mediaType": "tv",
+          "title": "The Flash",
+          "year": "2014",
+          "rating": 7.737,
+          "poster": "posters/tv-60735.jpg"
+        },
+        {
+          "id": 42009,
+          "mediaType": "tv",
+          "title": "Black Mirror",
+          "year": "2011",
+          "rating": 8.296,
+          "poster": "posters/tv-42009.jpg"
+        },
+        {
+          "id": 57243,
+          "mediaType": "tv",
+          "title": "Doctor Who",
+          "year": "2005",
+          "rating": 7.6,
+          "poster": "posters/tv-57243.jpg"
+        },
+        {
+          "id": 18165,
+          "mediaType": "tv",
+          "title": "The Vampire Diaries",
+          "year": "2009",
+          "rating": 8.3,
+          "poster": "posters/tv-18165.jpg"
+        },
+        {
+          "id": 1411,
+          "mediaType": "tv",
+          "title": "Person of Interest",
+          "year": "2011",
+          "rating": 8.098,
+          "poster": "posters/tv-1411.jpg"
+        },
+        {
+          "id": 64432,
+          "mediaType": "tv",
+          "title": "The Magicians",
+          "year": "2015",
+          "rating": 7.588,
+          "poster": "posters/tv-64432.jpg"
+        },
+        {
+          "id": 2560,
+          "mediaType": "tv",
+          "title": "UFO",
+          "year": "1970",
+          "rating": 7.625,
+          "poster": "posters/tv-2560.jpg"
+        },
+        {
+          "id": 64414,
+          "mediaType": "tv",
+          "title": "Wakfu",
+          "year": "2008",
+          "rating": 8.248,
+          "poster": "posters/tv-64414.jpg"
+        },
+        {
+          "id": 279246,
+          "mediaType": "tv",
+          "title": "The Remarried Empress",
+          "year": "2026",
+          "rating": 8.766,
+          "poster": "posters/tv-279246.jpg"
+        }
+      ]
+    },
+    {
+      "label": "Where to Watch: Crave",
+      "total": 31,
+      "items": [
+        {
+          "id": 1399,
+          "mediaType": "tv",
+          "title": "Game of Thrones",
+          "year": "2011",
+          "rating": 8.476,
+          "poster": "posters/tv-1399.jpg"
+        },
+        {
+          "id": 94997,
+          "mediaType": "tv",
+          "title": "House of the Dragon",
+          "year": "2022",
+          "rating": 8.4,
+          "poster": "posters/tv-94997.jpg"
+        },
+        {
+          "id": 4482,
+          "mediaType": "tv",
+          "title": "Bewitched",
+          "year": "1964",
+          "rating": 7.849,
+          "poster": "posters/tv-4482.jpg"
+        },
+        {
+          "id": 69478,
+          "mediaType": "tv",
+          "title": "The Handmaid's Tale",
+          "year": "2017",
+          "rating": 8.137,
+          "poster": "posters/tv-69478.jpg"
+        },
+        {
+          "id": 10545,
+          "mediaType": "tv",
+          "title": "True Blood",
+          "year": "2008",
+          "rating": 7.605,
+          "poster": "posters/tv-10545.jpg"
+        },
+        {
+          "id": 95350,
+          "mediaType": "tv",
+          "title": "Lanterns",
+          "year": "2026",
+          "rating": 8.171,
+          "poster": "posters/tv-95350.jpg"
+        },
+        {
+          "id": 79680,
+          "mediaType": "tv",
+          "title": "Snowpiercer",
+          "year": "2020",
+          "rating": 7.331,
+          "poster": "posters/tv-79680.jpg"
+        },
+        {
+          "id": 2440,
+          "mediaType": "tv",
+          "title": "Highway to Heaven",
+          "year": "1984",
+          "rating": 7.431,
+          "poster": "posters/tv-2440.jpg"
+        },
+        {
+          "id": 90228,
+          "mediaType": "tv",
+          "title": "Dune: Prophecy",
+          "year": "2024",
+          "rating": 7.216,
+          "poster": "posters/tv-90228.jpg"
+        },
+        {
+          "id": 1475,
+          "mediaType": "tv",
+          "title": "The Dead Zone",
+          "year": "2002",
+          "rating": 7.284,
+          "poster": "posters/tv-1475.jpg"
+        },
+        {
+          "id": 54344,
+          "mediaType": "tv",
+          "title": "The Leftovers",
+          "year": "2014",
+          "rating": 7.674,
+          "poster": "posters/tv-54344.jpg"
+        },
+        {
+          "id": 56296,
+          "mediaType": "tv",
+          "title": "Orphan Black",
+          "year": "2013",
+          "rating": 7.813,
+          "poster": "posters/tv-56296.jpg"
+        }
+      ]
+    },
+    {
+      "label": "Min Rating: 8.0",
+      "total": 6,
+      "items": [
+        {
+          "id": 1399,
+          "mediaType": "tv",
+          "title": "Game of Thrones",
+          "year": "2011",
+          "rating": 8.476,
+          "poster": "posters/tv-1399.jpg"
+        },
+        {
+          "id": 94997,
+          "mediaType": "tv",
+          "title": "House of the Dragon",
+          "year": "2022",
+          "rating": 8.4,
+          "poster": "posters/tv-94997.jpg"
+        },
+        {
+          "id": 69478,
+          "mediaType": "tv",
+          "title": "The Handmaid's Tale",
+          "year": "2017",
+          "rating": 8.137,
+          "poster": "posters/tv-69478.jpg"
+        },
+        {
+          "id": 95350,
+          "mediaType": "tv",
+          "title": "Lanterns",
+          "year": "2026",
+          "rating": 8.171,
+          "poster": "posters/tv-95350.jpg"
+        },
+        {
+          "id": 224372,
+          "mediaType": "tv",
+          "title": "A Knight of the Seven Kingdoms",
+          "year": "2026",
+          "rating": 8.416,
+          "poster": "posters/tv-224372.jpg"
+        },
+        {
+          "id": 10331,
+          "mediaType": "tv",
+          "title": "Spawn",
+          "year": "1997",
+          "rating": 8.041,
+          "poster": "posters/tv-10331.jpg"
+        }
+      ]
+    }
+  ],
+  "genre": {
+    "name": "Sci-Fi & Fantasy",
+    "total": 1957,
+    "items": [
+      {
+        "id": 1413,
+        "mediaType": "tv",
+        "title": "American Horror Story",
+        "year": "2011",
+        "rating": 8.078,
+        "poster": "posters/tv-1413.jpg"
+      },
+      {
+        "id": 1622,
+        "mediaType": "tv",
+        "title": "Supernatural",
+        "year": "2005",
+        "rating": 8.3,
+        "poster": "posters/tv-1622.jpg"
+      },
+      {
+        "id": 84773,
+        "mediaType": "tv",
+        "title": "The Lord of the Rings: The Rings of Power",
+        "year": "2022",
+        "rating": 7.2,
+        "poster": "posters/tv-84773.jpg"
+      },
+      {
+        "id": 4620,
+        "mediaType": "tv",
+        "title": "Eureka",
+        "year": "2006",
+        "rating": 7.726,
+        "poster": "posters/tv-4620.jpg"
+      },
+      {
+        "id": 60735,
+        "mediaType": "tv",
+        "title": "The Flash",
+        "year": "2014",
+        "rating": 7.737,
+        "poster": "posters/tv-60735.jpg"
+      },
+      {
+        "id": 1877,
+        "mediaType": "tv",
+        "title": "Phineas and Ferb",
+        "year": "2007",
+        "rating": 7.892,
+        "poster": "posters/tv-1877.jpg"
+      },
+      {
+        "id": 83631,
+        "mediaType": "tv",
+        "title": "What We Do in the Shadows",
+        "year": "2019",
+        "rating": 8.003,
+        "poster": "posters/tv-83631.jpg"
+      },
+      {
+        "id": 42009,
+        "mediaType": "tv",
+        "title": "Black Mirror",
+        "year": "2011",
+        "rating": 8.296,
+        "poster": "posters/tv-42009.jpg"
+      },
+      {
+        "id": 57243,
+        "mediaType": "tv",
+        "title": "Doctor Who",
+        "year": "2005",
+        "rating": 7.6,
+        "poster": "posters/tv-57243.jpg"
+      },
+      {
+        "id": 18165,
+        "mediaType": "tv",
+        "title": "The Vampire Diaries",
+        "year": "2009",
+        "rating": 8.3,
+        "poster": "posters/tv-18165.jpg"
+      },
+      {
+        "id": 60572,
+        "mediaType": "tv",
+        "title": "Pokémon",
+        "year": "1997",
+        "rating": 7.981,
+        "poster": "posters/tv-60572.jpg"
+      },
+      {
+        "id": 1411,
+        "mediaType": "tv",
+        "title": "Person of Interest",
+        "year": "2011",
+        "rating": 8.098,
+        "poster": "posters/tv-1411.jpg"
+      }
+    ]
+  }
+}

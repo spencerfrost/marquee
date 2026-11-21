@@ -1,0 +1,12 @@
+node_modules/
+out/
+# The soundtrack stays local: a royalty-free licence covers using the song
+# in the video, not redistributing the file.
+*.mp3
+*.wav
+*.flac
+
+# TMDB posters and backdrops (scripts/fetch-posters.mjs): the studios own them.
+public/posters/
+public/backdrops/
+public/logos/

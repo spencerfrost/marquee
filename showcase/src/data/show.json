@@ -1,0 +1,737 @@
+{
+  "id": 1399,
+  "name": "Game of Thrones",
+  "tagline": "Winter is coming.",
+  "status": "Ended",
+  "certification": "TV-MA",
+  "year": "2011",
+  "rating": 8.476,
+  "numberOfSeasons": 8,
+  "numberOfEpisodes": 73,
+  "overview": "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
+  "genres": [
+    {
+      "id": 10765,
+      "name": "Sci-Fi & Fantasy"
+    },
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 10759,
+      "name": "Action & Adventure"
+    }
+  ],
+  "networks": [
+    "HBO"
+  ],
+  "keywords": [
+    "based on novel or book",
+    "kingdom",
+    "dragon",
+    "king",
+    "intrigue",
+    "fantasy world"
+  ],
+  "poster": "posters/tv-1399.jpg",
+  "backdrop": "backdrops/tv-1399.jpg",
+  "providers": [
+    {
+      "name": "Crave",
+      "logo": "logos/provider-230.png"
+    },
+    {
+      "name": "Crave Amazon Channel",
+      "logo": "logos/provider-2604.png"
+    }
+  ],
+  "cast": [
+    {
+      "name": "Peter Dinklage",
+      "character": "Tyrion 'The Halfman' Lannister",
+      "episodes": 73,
+      "photo": "posters/person-22970.jpg"
+    },
+    {
+      "name": "Kit Harington",
+      "character": "Jon Snow",
+      "episodes": 73,
+      "photo": "posters/person-239019.jpg"
+    },
+    {
+      "name": "Nikolaj Coster-Waldau",
+      "character": "Sir Jaime 'Kingslayer' Lannister",
+      "episodes": 73,
+      "photo": "posters/person-12795.jpg"
+    },
+    {
+      "name": "Lena Headey",
+      "character": "Cersei Lannister",
+      "episodes": 73,
+      "photo": "posters/person-17286.jpg"
+    },
+    {
+      "name": "Emilia Clarke",
+      "character": "Daenerys Targaryen",
+      "episodes": 73,
+      "photo": "posters/person-1223786.jpg"
+    },
+    {
+      "name": "Maisie Williams",
+      "character": "Arya Stark",
+      "episodes": 73,
+      "photo": "posters/person-1181313.jpg"
+    },
+    {
+      "name": "Isaac Hempstead Wright",
+      "character": "Brandon 'Bran' Stark",
+      "episodes": 73,
+      "photo": "posters/person-239020.jpg"
+    },
+    {
+      "name": "Sophie Turner",
+      "character": "Sansa Stark",
+      "episodes": 73,
+      "photo": "posters/person-1001657.jpg"
+    },
+    {
+      "name": "Iain Glen",
+      "character": "Ser Jorah Mormont",
+      "episodes": 70,
+      "photo": "posters/person-20508.jpg"
+    },
+    {
+      "name": "John Bradley",
+      "character": "Samwell 'Sam' Tarly",
+      "episodes": 68,
+      "photo": "posters/person-1010135.jpg"
+    }
+  ],
+  "seasons": [
+    {
+      "number": 1,
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "name": "Winter Is Coming",
+          "rating": 8.17,
+          "votes": 549,
+          "airDate": "2011-04-17"
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "name": "The Kingsroad",
+          "rating": 8,
+          "votes": 331,
+          "airDate": "2011-04-24"
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "name": "Lord Snow",
+          "rating": 8.1,
+          "votes": 284,
+          "airDate": "2011-05-01"
+        },
+        {
+          "season": 1,
+          "episode": 4,
+          "name": "Cripples, Bastards, and Broken Things",
+          "rating": 8.2,
+          "votes": 260,
+          "airDate": "2011-05-08"
+        },
+        {
+          "season": 1,
+          "episode": 5,
+          "name": "The Wolf and the Lion",
+          "rating": 8.5,
+          "votes": 257,
+          "airDate": "2011-05-15"
+        },
+        {
+          "season": 1,
+          "episode": 6,
+          "name": "A Golden Crown",
+          "rating": 8.5,
+          "votes": 255,
+          "airDate": "2011-05-22"
+        },
+        {
+          "season": 1,
+          "episode": 7,
+          "name": "You Win or You Die",
+          "rating": 8.6,
+          "votes": 251,
+          "airDate": "2011-05-29"
+        },
+        {
+          "season": 1,
+          "episode": 8,
+          "name": "The Pointy End",
+          "rating": 8.3,
+          "votes": 249,
+          "airDate": "2011-06-05"
+        },
+        {
+          "season": 1,
+          "episode": 9,
+          "name": "Baelor",
+          "rating": 9,
+          "votes": 269,
+          "airDate": "2011-06-12"
+        },
+        {
+          "season": 1,
+          "episode": 10,
+          "name": "Fire and Blood",
+          "rating": 8.8,
+          "votes": 261,
+          "airDate": "2011-06-19"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "episodes": [
+        {
+          "season": 2,
+          "episode": 1,
+          "name": "The North Remembers",
+          "rating": 8.2,
+          "votes": 249,
+          "airDate": "2012-04-01"
+        },
+        {
+          "season": 2,
+          "episode": 2,
+          "name": "The Night Lands",
+          "rating": 7.9,
+          "votes": 229,
+          "airDate": "2012-04-08"
+        },
+        {
+          "season": 2,
+          "episode": 3,
+          "name": "What Is Dead May Never Die",
+          "rating": 8.3,
+          "votes": 220,
+          "airDate": "2012-04-15"
+        },
+        {
+          "season": 2,
+          "episode": 4,
+          "name": "Garden of Bones",
+          "rating": 8.3,
+          "votes": 221,
+          "airDate": "2012-04-22"
+        },
+        {
+          "season": 2,
+          "episode": 5,
+          "name": "The Ghost of Harrenhal",
+          "rating": 8.2,
+          "votes": 215,
+          "airDate": "2012-04-29"
+        },
+        {
+          "season": 2,
+          "episode": 6,
+          "name": "The Old Gods and the New",
+          "rating": 8.3,
+          "votes": 220,
+          "airDate": "2012-05-06"
+        },
+        {
+          "season": 2,
+          "episode": 7,
+          "name": "A Man Without Honor",
+          "rating": 8.2,
+          "votes": 218,
+          "airDate": "2012-05-13"
+        },
+        {
+          "season": 2,
+          "episode": 8,
+          "name": "The Prince of Winterfell",
+          "rating": 8.1,
+          "votes": 214,
+          "airDate": "2012-05-20"
+        },
+        {
+          "season": 2,
+          "episode": 9,
+          "name": "Blackwater",
+          "rating": 9,
+          "votes": 245,
+          "airDate": "2012-05-27"
+        },
+        {
+          "season": 2,
+          "episode": 10,
+          "name": "Valar Morghulis",
+          "rating": 8.8,
+          "votes": 228,
+          "airDate": "2012-06-03"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "episodes": [
+        {
+          "season": 3,
+          "episode": 1,
+          "name": "Valar Dohaeris",
+          "rating": 8.2,
+          "votes": 233,
+          "airDate": "2013-03-31"
+        },
+        {
+          "season": 3,
+          "episode": 2,
+          "name": "Dark Wings, Dark Words",
+          "rating": 7.9,
+          "votes": 214,
+          "airDate": "2013-04-07"
+        },
+        {
+          "season": 3,
+          "episode": 3,
+          "name": "Walk of Punishment",
+          "rating": 8.2,
+          "votes": 218,
+          "airDate": "2013-04-14"
+        },
+        {
+          "season": 3,
+          "episode": 4,
+          "name": "And Now His Watch Is Ended",
+          "rating": 8.8,
+          "votes": 230,
+          "airDate": "2013-04-21"
+        },
+        {
+          "season": 3,
+          "episode": 5,
+          "name": "Kissed by Fire",
+          "rating": 8.2,
+          "votes": 214,
+          "airDate": "2013-04-28"
+        },
+        {
+          "season": 3,
+          "episode": 6,
+          "name": "The Climb",
+          "rating": 8.1,
+          "votes": 203,
+          "airDate": "2013-05-05"
+        },
+        {
+          "season": 3,
+          "episode": 7,
+          "name": "The Bear and the Maiden Fair",
+          "rating": 8.2,
+          "votes": 213,
+          "airDate": "2013-05-12"
+        },
+        {
+          "season": 3,
+          "episode": 8,
+          "name": "Second Sons",
+          "rating": 8.3,
+          "votes": 206,
+          "airDate": "2013-05-19"
+        },
+        {
+          "season": 3,
+          "episode": 9,
+          "name": "The Rains of Castamere",
+          "rating": 9.3,
+          "votes": 309,
+          "airDate": "2013-06-02"
+        },
+        {
+          "season": 3,
+          "episode": 10,
+          "name": "Mhysa",
+          "rating": 8.5,
+          "votes": 218,
+          "airDate": "2013-06-09"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "episodes": [
+        {
+          "season": 4,
+          "episode": 1,
+          "name": "Two Swords",
+          "rating": 8.2,
+          "votes": 244,
+          "airDate": "2014-04-06"
+        },
+        {
+          "season": 4,
+          "episode": 2,
+          "name": "The Lion and the Rose",
+          "rating": 8.9,
+          "votes": 248,
+          "airDate": "2014-04-13"
+        },
+        {
+          "season": 4,
+          "episode": 3,
+          "name": "Breaker of Chains",
+          "rating": 8.2,
+          "votes": 216,
+          "airDate": "2014-04-20"
+        },
+        {
+          "season": 4,
+          "episode": 4,
+          "name": "Oathkeeper",
+          "rating": 8,
+          "votes": 218,
+          "airDate": "2014-04-27"
+        },
+        {
+          "season": 4,
+          "episode": 5,
+          "name": "First of His Name",
+          "rating": 8.1,
+          "votes": 218,
+          "airDate": "2014-05-04"
+        },
+        {
+          "season": 4,
+          "episode": 6,
+          "name": "The Laws of Gods and Men",
+          "rating": 9,
+          "votes": 253,
+          "airDate": "2014-05-11"
+        },
+        {
+          "season": 4,
+          "episode": 7,
+          "name": "Mockingbird",
+          "rating": 8.3,
+          "votes": 220,
+          "airDate": "2014-05-18"
+        },
+        {
+          "season": 4,
+          "episode": 8,
+          "name": "The Mountain and the Viper",
+          "rating": 8.9,
+          "votes": 256,
+          "airDate": "2014-06-01"
+        },
+        {
+          "season": 4,
+          "episode": 9,
+          "name": "The Watchers on the Wall",
+          "rating": 8.7,
+          "votes": 243,
+          "airDate": "2014-06-08"
+        },
+        {
+          "season": 4,
+          "episode": 10,
+          "name": "The Children",
+          "rating": 8.9,
+          "votes": 240,
+          "airDate": "2014-06-15"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "episodes": [
+        {
+          "season": 5,
+          "episode": 1,
+          "name": "The Wars to Come",
+          "rating": 7.9,
+          "votes": 234,
+          "airDate": "2015-04-12"
+        },
+        {
+          "season": 5,
+          "episode": 2,
+          "name": "The House of Black and White",
+          "rating": 7.9,
+          "votes": 218,
+          "airDate": "2015-04-19"
+        },
+        {
+          "season": 5,
+          "episode": 3,
+          "name": "High Sparrow",
+          "rating": 7.9,
+          "votes": 211,
+          "airDate": "2015-04-26"
+        },
+        {
+          "season": 5,
+          "episode": 4,
+          "name": "Sons of the Harpy",
+          "rating": 8,
+          "votes": 214,
+          "airDate": "2015-05-03"
+        },
+        {
+          "season": 5,
+          "episode": 5,
+          "name": "Kill the Boy",
+          "rating": 7.9,
+          "votes": 210,
+          "airDate": "2015-05-10"
+        },
+        {
+          "season": 5,
+          "episode": 6,
+          "name": "Unbowed, Unbent, Unbroken",
+          "rating": 7.5,
+          "votes": 208,
+          "airDate": "2015-05-17"
+        },
+        {
+          "season": 5,
+          "episode": 7,
+          "name": "The Gift",
+          "rating": 8.2,
+          "votes": 216,
+          "airDate": "2015-05-24"
+        },
+        {
+          "season": 5,
+          "episode": 8,
+          "name": "Hardhome",
+          "rating": 9.2,
+          "votes": 291,
+          "airDate": "2015-05-31"
+        },
+        {
+          "season": 5,
+          "episode": 9,
+          "name": "The Dance of Dragons",
+          "rating": 8.8,
+          "votes": 230,
+          "airDate": "2015-06-07"
+        },
+        {
+          "season": 5,
+          "episode": 10,
+          "name": "Mother's Mercy",
+          "rating": 8.6,
+          "votes": 224,
+          "airDate": "2015-06-14"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "episodes": [
+        {
+          "season": 6,
+          "episode": 1,
+          "name": "The Red Woman",
+          "rating": 7.7,
+          "votes": 279,
+          "airDate": "2016-04-24"
+        },
+        {
+          "season": 6,
+          "episode": 2,
+          "name": "Home",
+          "rating": 8.3,
+          "votes": 249,
+          "airDate": "2016-05-01"
+        },
+        {
+          "season": 6,
+          "episode": 3,
+          "name": "Oathbreaker",
+          "rating": 8,
+          "votes": 226,
+          "airDate": "2016-05-08"
+        },
+        {
+          "season": 6,
+          "episode": 4,
+          "name": "Book of the Stranger",
+          "rating": 8.4,
+          "votes": 229,
+          "airDate": "2016-05-15"
+        },
+        {
+          "season": 6,
+          "episode": 5,
+          "name": "The Door",
+          "rating": 8.9,
+          "votes": 280,
+          "airDate": "2016-05-22"
+        },
+        {
+          "season": 6,
+          "episode": 6,
+          "name": "Blood of My Blood",
+          "rating": 7.8,
+          "votes": 221,
+          "airDate": "2016-05-29"
+        },
+        {
+          "season": 6,
+          "episode": 7,
+          "name": "The Broken Man",
+          "rating": 7.8,
+          "votes": 220,
+          "airDate": "2016-06-05"
+        },
+        {
+          "season": 6,
+          "episode": 8,
+          "name": "No One",
+          "rating": 7.8,
+          "votes": 213,
+          "airDate": "2016-06-12"
+        },
+        {
+          "season": 6,
+          "episode": 9,
+          "name": "Battle of the Bastards",
+          "rating": 9.3,
+          "votes": 415,
+          "airDate": "2016-06-19"
+        },
+        {
+          "season": 6,
+          "episode": 10,
+          "name": "The Winds of Winter",
+          "rating": 9.3,
+          "votes": 358,
+          "airDate": "2016-06-26"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "episodes": [
+        {
+          "season": 7,
+          "episode": 1,
+          "name": "Dragonstone",
+          "rating": 8,
+          "votes": 278,
+          "airDate": "2017-07-16"
+        },
+        {
+          "season": 7,
+          "episode": 2,
+          "name": "Stormborn",
+          "rating": 7.9,
+          "votes": 243,
+          "airDate": "2017-07-23"
+        },
+        {
+          "season": 7,
+          "episode": 3,
+          "name": "The Queen's Justice",
+          "rating": 8,
+          "votes": 247,
+          "airDate": "2017-07-30"
+        },
+        {
+          "season": 7,
+          "episode": 4,
+          "name": "The Spoils of War",
+          "rating": 8.8,
+          "votes": 292,
+          "airDate": "2017-08-06"
+        },
+        {
+          "season": 7,
+          "episode": 5,
+          "name": "Eastwatch",
+          "rating": 7.9,
+          "votes": 231,
+          "airDate": "2017-08-13"
+        },
+        {
+          "season": 7,
+          "episode": 6,
+          "name": "Beyond the Wall",
+          "rating": 8.098,
+          "votes": 260,
+          "airDate": "2017-08-20"
+        },
+        {
+          "season": 7,
+          "episode": 7,
+          "name": "The Dragon and the Wolf",
+          "rating": 8.6,
+          "votes": 263,
+          "airDate": "2017-08-27"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "episodes": [
+        {
+          "season": 8,
+          "episode": 1,
+          "name": "Winterfell",
+          "rating": 7.085,
+          "votes": 365,
+          "airDate": "2019-04-14"
+        },
+        {
+          "season": 8,
+          "episode": 2,
+          "name": "A Knight of the Seven Kingdoms",
+          "rating": 7.346,
+          "votes": 342,
+          "airDate": "2019-04-21"
+        },
+        {
+          "season": 8,
+          "episode": 3,
+          "name": "The Long Night",
+          "rating": 6.9,
+          "votes": 423,
+          "airDate": "2019-04-28"
+        },
+        {
+          "season": 8,
+          "episode": 4,
+          "name": "The Last of the Starks",
+          "rating": 5.617,
+          "votes": 364,
+          "airDate": "2019-05-05"
+        },
+        {
+          "season": 8,
+          "episode": 5,
+          "name": "The Bells",
+          "rating": 5.832,
+          "votes": 393,
+          "airDate": "2019-05-12"
+        },
+        {
+          "season": 8,
+          "episode": 6,
+          "name": "The Iron Throne",
+          "rating": 4.469,
+          "votes": 480,
+          "airDate": "2019-05-19"
+        }
+      ]
+    }
+  ]
+}

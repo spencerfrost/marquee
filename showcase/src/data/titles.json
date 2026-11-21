@@ -1,0 +1,949 @@
+{
+  "fetched": "2026-11-21",
+  "rails": [
+    {
+      "key": "trending-week",
+      "title": "Trending this week",
+      "items": [
+        {
+          "id": 1368337,
+          "mediaType": "movie",
+          "title": "The Odyssey",
+          "year": "2026",
+          "rating": 8,
+          "poster": "posters/movie-1368337.jpg"
+        },
+        {
+          "id": 1300968,
+          "mediaType": "movie",
+          "title": "The Hunger Games: Sunrise on the Reaping",
+          "year": "2026",
+          "rating": 7.6,
+          "poster": "posters/movie-1300968.jpg"
+        },
+        {
+          "id": 1003596,
+          "mediaType": "movie",
+          "title": "Avengers: Doomsday",
+          "year": "2026",
+          "rating": 0,
+          "poster": "posters/movie-1003596.jpg"
+        },
+        {
+          "id": 84773,
+          "mediaType": "tv",
+          "title": "The Lord of the Rings: The Rings of Power",
+          "year": "2022",
+          "rating": 7.2,
+          "poster": "posters/tv-84773.jpg"
+        },
+        {
+          "id": 300523,
+          "mediaType": "tv",
+          "title": "The Blue Road",
+          "year": "2026",
+          "rating": 7.8,
+          "poster": "posters/tv-300523.jpg"
+        },
+        {
+          "id": 1595124,
+          "mediaType": "movie",
+          "title": "Steps",
+          "year": "2026",
+          "rating": 6.3,
+          "poster": "posters/movie-1595124.jpg"
+        },
+        {
+          "id": 247718,
+          "mediaType": "tv",
+          "title": "MobLand",
+          "year": "2025",
+          "rating": 8.7,
+          "poster": "posters/tv-247718.jpg"
+        },
+        {
+          "id": 1185344,
+          "mediaType": "movie",
+          "title": "The Beast",
+          "year": "2026",
+          "rating": 4.9,
+          "poster": "posters/movie-1185344.jpg"
+        },
+        {
+          "id": 1551025,
+          "mediaType": "movie",
+          "title": "Guarding Stars",
+          "year": "2026",
+          "rating": 7,
+          "poster": "posters/movie-1551025.jpg"
+        },
+        {
+          "id": 291507,
+          "mediaType": "tv",
+          "title": "The Body",
+          "year": "2026",
+          "rating": 7.9,
+          "poster": "posters/tv-291507.jpg"
+        },
+        {
+          "id": 1131943,
+          "mediaType": "movie",
+          "title": "Madden",
+          "year": "2026",
+          "rating": 7.2,
+          "poster": "posters/movie-1131943.jpg"
+        },
+        {
+          "id": 969681,
+          "mediaType": "movie",
+          "title": "Spider-Man: Brand New Day",
+          "year": "2026",
+          "rating": 8.5,
+          "poster": "posters/movie-969681.jpg"
+        },
+        {
+          "id": 213375,
+          "mediaType": "tv",
+          "title": "VisionQuest",
+          "year": "2026",
+          "rating": 8.2,
+          "poster": "posters/tv-213375.jpg"
+        },
+        {
+          "id": 259909,
+          "mediaType": "tv",
+          "title": "Dexter: Resurrection",
+          "year": "2025",
+          "rating": 8.5,
+          "poster": "posters/tv-259909.jpg"
+        }
+      ]
+    },
+    {
+      "key": "movie-now-playing",
+      "title": "Now playing",
+      "items": [
+        {
+          "id": 1263337,
+          "mediaType": "movie",
+          "title": "Heart of the Beast",
+          "year": "2026",
+          "rating": 7.8,
+          "poster": "posters/movie-1263337.jpg"
+        },
+        {
+          "id": 1400837,
+          "mediaType": "movie",
+          "title": "Other Mommy",
+          "year": "2026",
+          "rating": 6.4,
+          "poster": "posters/movie-1400837.jpg"
+        },
+        {
+          "id": 1300968,
+          "mediaType": "movie",
+          "title": "The Hunger Games: Sunrise on the Reaping",
+          "year": "2026",
+          "rating": 7.6,
+          "poster": "posters/movie-1300968.jpg"
+        },
+        {
+          "id": 1616687,
+          "mediaType": "movie",
+          "title": "Never Surrender",
+          "year": "2026",
+          "rating": 6.8,
+          "poster": "posters/movie-1616687.jpg"
+        },
+        {
+          "id": 1058424,
+          "mediaType": "movie",
+          "title": "Hope",
+          "year": "2026",
+          "rating": 6.8,
+          "poster": "posters/movie-1058424.jpg"
+        },
+        {
+          "id": 1813355,
+          "mediaType": "movie",
+          "title": "A Story of Derry",
+          "year": "2026",
+          "rating": 6.5,
+          "poster": "posters/movie-1813355.jpg"
+        },
+        {
+          "id": 1244523,
+          "mediaType": "movie",
+          "title": "Beware Boiúna",
+          "year": "2026",
+          "rating": 5.9,
+          "poster": "posters/movie-1244523.jpg"
+        },
+        {
+          "id": 1294189,
+          "mediaType": "movie",
+          "title": "The Mongoose",
+          "year": "2026",
+          "rating": 6.5,
+          "poster": "posters/movie-1294189.jpg"
+        },
+        {
+          "id": 656908,
+          "mediaType": "movie",
+          "title": "Ramayana: Rise of a Legend",
+          "year": "2026",
+          "rating": 7.4,
+          "poster": "posters/movie-656908.jpg"
+        },
+        {
+          "id": 1381071,
+          "mediaType": "movie",
+          "title": "Godzilla Minus Zero",
+          "year": "2026",
+          "rating": 7.7,
+          "poster": "posters/movie-1381071.jpg"
+        },
+        {
+          "id": 1567605,
+          "mediaType": "movie",
+          "title": "Ebenezer",
+          "year": "2026",
+          "rating": 7.5,
+          "poster": "posters/movie-1567605.jpg"
+        },
+        {
+          "id": 1562642,
+          "mediaType": "movie",
+          "title": "Ghost Soldier",
+          "year": "2026",
+          "rating": 8.9,
+          "poster": "posters/movie-1562642.jpg"
+        },
+        {
+          "id": 1551025,
+          "mediaType": "movie",
+          "title": "Guarding Stars",
+          "year": "2026",
+          "rating": 7,
+          "poster": "posters/movie-1551025.jpg"
+        },
+        {
+          "id": 1422041,
+          "mediaType": "movie",
+          "title": "LA BOLA NEGRA",
+          "year": "2026",
+          "rating": 8,
+          "poster": "posters/movie-1422041.jpg"
+        }
+      ]
+    },
+    {
+      "key": "tv-on-the-air",
+      "title": "On the air",
+      "items": [
+        {
+          "id": 84773,
+          "mediaType": "tv",
+          "title": "The Lord of the Rings: The Rings of Power",
+          "year": "2022",
+          "rating": 7.2,
+          "poster": "posters/tv-84773.jpg"
+        },
+        {
+          "id": 37678,
+          "mediaType": "tv",
+          "title": "The Voice",
+          "year": "2011",
+          "rating": 5.9,
+          "poster": "posters/tv-37678.jpg"
+        },
+        {
+          "id": 456,
+          "mediaType": "tv",
+          "title": "The Simpsons",
+          "year": "1989",
+          "rating": 8,
+          "poster": "posters/tv-456.jpg"
+        },
+        {
+          "id": 46923,
+          "mediaType": "tv",
+          "title": "Shetland",
+          "year": "2013",
+          "rating": 7.5,
+          "poster": "posters/tv-46923.jpg"
+        },
+        {
+          "id": 231962,
+          "mediaType": "tv",
+          "title": "Diepe Waters",
+          "year": "2022",
+          "rating": 8.2,
+          "poster": "posters/tv-231962.jpg"
+        },
+        {
+          "id": 33238,
+          "mediaType": "tv",
+          "title": "Running Man",
+          "year": "2010",
+          "rating": 8.2,
+          "poster": "posters/tv-33238.jpg"
+        },
+        {
+          "id": 11890,
+          "mediaType": "tv",
+          "title": "Goede Tijden, Slechte Tijden",
+          "year": "1990",
+          "rating": 5.3,
+          "poster": "posters/tv-11890.jpg"
+        },
+        {
+          "id": 387,
+          "mediaType": "tv",
+          "title": "SpongeBob SquarePants",
+          "year": "1999",
+          "rating": 7.7,
+          "poster": "posters/tv-387.jpg"
+        },
+        {
+          "id": 153312,
+          "mediaType": "tv",
+          "title": "Tulsa King",
+          "year": "2022",
+          "rating": 8.3,
+          "poster": "posters/tv-153312.jpg"
+        },
+        {
+          "id": 206559,
+          "mediaType": "tv",
+          "title": "Binnelanders",
+          "year": "2005",
+          "rating": 5.5,
+          "poster": "posters/tv-206559.jpg"
+        },
+        {
+          "id": 61818,
+          "mediaType": "tv",
+          "title": "Late Night with Seth Meyers",
+          "year": "2014",
+          "rating": 5.1,
+          "poster": "posters/tv-61818.jpg"
+        },
+        {
+          "id": 279246,
+          "mediaType": "tv",
+          "title": "The Remarried Empress",
+          "year": "2026",
+          "rating": 8.8,
+          "poster": "posters/tv-279246.jpg"
+        },
+        {
+          "id": 4656,
+          "mediaType": "tv",
+          "title": "Raw",
+          "year": "1993",
+          "rating": 6.7,
+          "poster": "posters/tv-4656.jpg"
+        },
+        {
+          "id": 291,
+          "mediaType": "tv",
+          "title": "Coronation Street",
+          "year": "1960",
+          "rating": 5.3,
+          "poster": "posters/tv-291.jpg"
+        }
+      ]
+    },
+    {
+      "key": "movie-popular",
+      "title": "Popular movies",
+      "items": [
+        {
+          "id": 1726,
+          "mediaType": "movie",
+          "title": "Iron Man",
+          "year": "2008",
+          "rating": 7.7,
+          "poster": "posters/movie-1726.jpg"
+        },
+        {
+          "id": 1368337,
+          "mediaType": "movie",
+          "title": "The Odyssey",
+          "year": "2026",
+          "rating": 8,
+          "poster": "posters/movie-1368337.jpg"
+        },
+        {
+          "id": 1263337,
+          "mediaType": "movie",
+          "title": "Heart of the Beast",
+          "year": "2026",
+          "rating": 7.8,
+          "poster": "posters/movie-1263337.jpg"
+        },
+        {
+          "id": 1400837,
+          "mediaType": "movie",
+          "title": "Other Mommy",
+          "year": "2026",
+          "rating": 6.4,
+          "poster": "posters/movie-1400837.jpg"
+        },
+        {
+          "id": 969681,
+          "mediaType": "movie",
+          "title": "Spider-Man: Brand New Day",
+          "year": "2026",
+          "rating": 8.5,
+          "poster": "posters/movie-969681.jpg"
+        },
+        {
+          "id": 1423191,
+          "mediaType": "movie",
+          "title": "Resident Evil",
+          "year": "2026",
+          "rating": 7.5,
+          "poster": "posters/movie-1423191.jpg"
+        },
+        {
+          "id": 1300968,
+          "mediaType": "movie",
+          "title": "The Hunger Games: Sunrise on the Reaping",
+          "year": "2026",
+          "rating": 7.5,
+          "poster": "posters/movie-1300968.jpg"
+        },
+        {
+          "id": 1616687,
+          "mediaType": "movie",
+          "title": "Never Surrender",
+          "year": "2026",
+          "rating": 6.8,
+          "poster": "posters/movie-1616687.jpg"
+        },
+        {
+          "id": 1058424,
+          "mediaType": "movie",
+          "title": "Hope",
+          "year": "2026",
+          "rating": 6.8,
+          "poster": "posters/movie-1058424.jpg"
+        },
+        {
+          "id": 1813355,
+          "mediaType": "movie",
+          "title": "A Story of Derry",
+          "year": "2026",
+          "rating": 6.5,
+          "poster": "posters/movie-1813355.jpg"
+        },
+        {
+          "id": 1003596,
+          "mediaType": "movie",
+          "title": "Avengers: Doomsday",
+          "year": "2026",
+          "rating": 0,
+          "poster": "posters/movie-1003596.jpg"
+        },
+        {
+          "id": 687163,
+          "mediaType": "movie",
+          "title": "Project Hail Mary",
+          "year": "2026",
+          "rating": 8.6,
+          "poster": "posters/movie-687163.jpg"
+        },
+        {
+          "id": 1507696,
+          "mediaType": "movie",
+          "title": "Apocalypse Z: New World",
+          "year": "2026",
+          "rating": 6.2,
+          "poster": "posters/movie-1507696.jpg"
+        },
+        {
+          "id": 1244523,
+          "mediaType": "movie",
+          "title": "Beware Boiúna",
+          "year": "2026",
+          "rating": 5.9,
+          "poster": "posters/movie-1244523.jpg"
+        }
+      ]
+    },
+    {
+      "key": "tv-popular",
+      "title": "Popular TV",
+      "items": [
+        {
+          "id": 1413,
+          "mediaType": "tv",
+          "title": "American Horror Story",
+          "year": "2011",
+          "rating": 8.1,
+          "poster": "posters/tv-1413.jpg"
+        },
+        {
+          "id": 1434,
+          "mediaType": "tv",
+          "title": "Family Guy",
+          "year": "1999",
+          "rating": 7.4,
+          "poster": "posters/tv-1434.jpg"
+        },
+        {
+          "id": 1622,
+          "mediaType": "tv",
+          "title": "Supernatural",
+          "year": "2005",
+          "rating": 8.3,
+          "poster": "posters/tv-1622.jpg"
+        },
+        {
+          "id": 5920,
+          "mediaType": "tv",
+          "title": "The Mentalist",
+          "year": "2008",
+          "rating": 8.4,
+          "poster": "posters/tv-5920.jpg"
+        },
+        {
+          "id": 32573,
+          "mediaType": "tv",
+          "title": "Strike Back",
+          "year": "2010",
+          "rating": 7.4,
+          "poster": "posters/tv-32573.jpg"
+        },
+        {
+          "id": 84773,
+          "mediaType": "tv",
+          "title": "The Lord of the Rings: The Rings of Power",
+          "year": "2022",
+          "rating": 7.2,
+          "poster": "posters/tv-84773.jpg"
+        },
+        {
+          "id": 4620,
+          "mediaType": "tv",
+          "title": "Eureka",
+          "year": "2006",
+          "rating": 7.7,
+          "poster": "posters/tv-4620.jpg"
+        },
+        {
+          "id": 60735,
+          "mediaType": "tv",
+          "title": "The Flash",
+          "year": "2014",
+          "rating": 7.7,
+          "poster": "posters/tv-60735.jpg"
+        },
+        {
+          "id": 76331,
+          "mediaType": "tv",
+          "title": "Succession",
+          "year": "2018",
+          "rating": 8.3,
+          "poster": "posters/tv-76331.jpg"
+        },
+        {
+          "id": 37678,
+          "mediaType": "tv",
+          "title": "The Voice",
+          "year": "2011",
+          "rating": 5.9,
+          "poster": "posters/tv-37678.jpg"
+        },
+        {
+          "id": 1100,
+          "mediaType": "tv",
+          "title": "How I Met Your Mother",
+          "year": "2005",
+          "rating": 8.1,
+          "poster": "posters/tv-1100.jpg"
+        },
+        {
+          "id": 18347,
+          "mediaType": "tv",
+          "title": "Community",
+          "year": "2009",
+          "rating": 8,
+          "poster": "posters/tv-18347.jpg"
+        },
+        {
+          "id": 1877,
+          "mediaType": "tv",
+          "title": "Phineas and Ferb",
+          "year": "2007",
+          "rating": 7.9,
+          "poster": "posters/tv-1877.jpg"
+        },
+        {
+          "id": 1400,
+          "mediaType": "tv",
+          "title": "Seinfeld",
+          "year": "1989",
+          "rating": 8.2,
+          "poster": "posters/tv-1400.jpg"
+        }
+      ]
+    },
+    {
+      "key": "movie-top-rated",
+      "title": "Top rated movies",
+      "items": [
+        {
+          "id": 1560520,
+          "mediaType": "movie",
+          "title": "Batman: Knightfall Part 1: Knightfall",
+          "year": "2026",
+          "rating": 9.1,
+          "poster": "posters/movie-1560520.jpg"
+        },
+        {
+          "id": 980431,
+          "mediaType": "movie",
+          "title": "Avatar Aang: The Last Airbender",
+          "year": "2026",
+          "rating": 9,
+          "poster": "posters/movie-980431.jpg"
+        },
+        {
+          "id": 1007757,
+          "mediaType": "movie",
+          "title": "Swapped",
+          "year": "2026",
+          "rating": 8.8,
+          "poster": "posters/movie-1007757.jpg"
+        },
+        {
+          "id": 1311031,
+          "mediaType": "movie",
+          "title": "Demon Slayer: Kimetsu no Yaiba Infinity Castle",
+          "year": "2025",
+          "rating": 8.8,
+          "poster": "posters/movie-1311031.jpg"
+        },
+        {
+          "id": 1632181,
+          "mediaType": "movie",
+          "title": "Accidental Partners",
+          "year": "2026",
+          "rating": 8.8,
+          "poster": "posters/movie-1632181.jpg"
+        },
+        {
+          "id": 278,
+          "mediaType": "movie",
+          "title": "The Shawshank Redemption",
+          "year": "1994",
+          "rating": 8.7,
+          "poster": "posters/movie-278.jpg"
+        },
+        {
+          "id": 1621552,
+          "mediaType": "movie",
+          "title": "Facing El Chapo",
+          "year": "2026",
+          "rating": 8.7,
+          "poster": "posters/movie-1621552.jpg"
+        },
+        {
+          "id": 238,
+          "mediaType": "movie",
+          "title": "The Godfather",
+          "year": "1972",
+          "rating": 8.7,
+          "poster": "posters/movie-238.jpg"
+        },
+        {
+          "id": 687163,
+          "mediaType": "movie",
+          "title": "Project Hail Mary",
+          "year": "2026",
+          "rating": 8.6,
+          "poster": "posters/movie-687163.jpg"
+        },
+        {
+          "id": 1232449,
+          "mediaType": "movie",
+          "title": "Young Hearts",
+          "year": "2024",
+          "rating": 8.6,
+          "poster": "posters/movie-1232449.jpg"
+        },
+        {
+          "id": 389,
+          "mediaType": "movie",
+          "title": "12 Angry Men",
+          "year": "1957",
+          "rating": 8.6,
+          "poster": "posters/movie-389.jpg"
+        },
+        {
+          "id": 240,
+          "mediaType": "movie",
+          "title": "The Godfather Part II",
+          "year": "1974",
+          "rating": 8.6,
+          "poster": "posters/movie-240.jpg"
+        },
+        {
+          "id": 936075,
+          "mediaType": "movie",
+          "title": "Michael",
+          "year": "2026",
+          "rating": 8.6,
+          "poster": "posters/movie-936075.jpg"
+        },
+        {
+          "id": 424,
+          "mediaType": "movie",
+          "title": "Schindler's List",
+          "year": "1993",
+          "rating": 8.6,
+          "poster": "posters/movie-424.jpg"
+        }
+      ]
+    },
+    {
+      "key": "tv-top-rated",
+      "title": "Top rated TV",
+      "items": [
+        {
+          "id": 312359,
+          "mediaType": "tv",
+          "title": "Dragon Ball Super: Beerus",
+          "year": "2026",
+          "rating": 9.6,
+          "poster": "posters/tv-312359.jpg"
+        },
+        {
+          "id": 276161,
+          "mediaType": "tv",
+          "title": "Teach You a Lesson",
+          "year": "2026",
+          "rating": 9.3,
+          "poster": "posters/tv-276161.jpg"
+        },
+        {
+          "id": 299167,
+          "mediaType": "tv",
+          "title": "Dutton Ranch",
+          "year": "2026",
+          "rating": 9.1,
+          "poster": "posters/tv-299167.jpg"
+        },
+        {
+          "id": 229544,
+          "mediaType": "tv",
+          "title": "Among Us",
+          "year": "2026",
+          "rating": 9,
+          "poster": "posters/tv-229544.jpg"
+        },
+        {
+          "id": 1396,
+          "mediaType": "tv",
+          "title": "Breaking Bad",
+          "year": "2008",
+          "rating": 9,
+          "poster": "posters/tv-1396.jpg"
+        },
+        {
+          "id": 278573,
+          "mediaType": "tv",
+          "title": "Perfect Crown",
+          "year": "2026",
+          "rating": 8.9,
+          "poster": "posters/tv-278573.jpg"
+        },
+        {
+          "id": 284833,
+          "mediaType": "tv",
+          "title": "Avatar: Seven Havens",
+          "year": "2026",
+          "rating": 8.9,
+          "poster": "posters/tv-284833.jpg"
+        },
+        {
+          "id": 214999,
+          "mediaType": "tv",
+          "title": "The Good Bad Mother",
+          "year": "2023",
+          "rating": 8.9,
+          "poster": "posters/tv-214999.jpg"
+        },
+        {
+          "id": 85077,
+          "mediaType": "tv",
+          "title": "The Chosen",
+          "year": "2019",
+          "rating": 8.9,
+          "poster": "posters/tv-85077.jpg"
+        },
+        {
+          "id": 273240,
+          "mediaType": "tv",
+          "title": "Off Campus",
+          "year": "2026",
+          "rating": 8.8,
+          "poster": "posters/tv-273240.jpg"
+        },
+        {
+          "id": 209867,
+          "mediaType": "tv",
+          "title": "Frieren: Beyond Journey's End",
+          "year": "2023",
+          "rating": 8.8,
+          "poster": "posters/tv-209867.jpg"
+        },
+        {
+          "id": 322430,
+          "mediaType": "tv",
+          "title": "The Polygamist",
+          "year": "2026",
+          "rating": 8.8,
+          "poster": "posters/tv-322430.jpg"
+        },
+        {
+          "id": 245026,
+          "mediaType": "tv",
+          "title": "Wizards Beyond Waverly Place",
+          "year": "2024",
+          "rating": 8.8,
+          "poster": "posters/tv-245026.jpg"
+        },
+        {
+          "id": 219246,
+          "mediaType": "tv",
+          "title": "When Life Gives You Tangerines",
+          "year": "2025",
+          "rating": 8.8,
+          "poster": "posters/tv-219246.jpg"
+        }
+      ]
+    },
+    {
+      "key": "movie-upcoming",
+      "title": "Upcoming movies",
+      "items": [
+        {
+          "id": 969681,
+          "mediaType": "movie",
+          "title": "Spider-Man: Brand New Day",
+          "year": "2026",
+          "rating": 8.5,
+          "poster": "posters/movie-969681.jpg"
+        },
+        {
+          "id": 1300968,
+          "mediaType": "movie",
+          "title": "The Hunger Games: Sunrise on the Reaping",
+          "year": "2026",
+          "rating": 7.5,
+          "poster": "posters/movie-1300968.jpg"
+        },
+        {
+          "id": 1003596,
+          "mediaType": "movie",
+          "title": "Avengers: Doomsday",
+          "year": "2026",
+          "rating": 0,
+          "poster": "posters/movie-1003596.jpg"
+        },
+        {
+          "id": 687163,
+          "mediaType": "movie",
+          "title": "Project Hail Mary",
+          "year": "2026",
+          "rating": 8.6,
+          "poster": "posters/movie-687163.jpg"
+        },
+        {
+          "id": 1244523,
+          "mediaType": "movie",
+          "title": "Beware Boiúna",
+          "year": "2026",
+          "rating": 5.9,
+          "poster": "posters/movie-1244523.jpg"
+        },
+        {
+          "id": 656908,
+          "mediaType": "movie",
+          "title": "Ramayana: Rise of a Legend",
+          "year": "2026",
+          "rating": 7.4,
+          "poster": "posters/movie-656908.jpg"
+        },
+        {
+          "id": 1294189,
+          "mediaType": "movie",
+          "title": "The Mongoose",
+          "year": "2026",
+          "rating": 6.5,
+          "poster": "posters/movie-1294189.jpg"
+        },
+        {
+          "id": 1562642,
+          "mediaType": "movie",
+          "title": "Ghost Soldier",
+          "year": "2026",
+          "rating": 8.9,
+          "poster": "posters/movie-1562642.jpg"
+        },
+        {
+          "id": 1381071,
+          "mediaType": "movie",
+          "title": "Godzilla Minus Zero",
+          "year": "2026",
+          "rating": 7.7,
+          "poster": "posters/movie-1381071.jpg"
+        },
+        {
+          "id": 1567605,
+          "mediaType": "movie",
+          "title": "Ebenezer",
+          "year": "2026",
+          "rating": 7.5,
+          "poster": "posters/movie-1567605.jpg"
+        },
+        {
+          "id": 1422041,
+          "mediaType": "movie",
+          "title": "LA BOLA NEGRA",
+          "year": "2026",
+          "rating": 8,
+          "poster": "posters/movie-1422041.jpg"
+        },
+        {
+          "id": 1228834,
+          "mediaType": "movie",
+          "title": "The Fix",
+          "year": "2026",
+          "rating": 5.8,
+          "poster": "posters/movie-1228834.jpg"
+        },
+        {
+          "id": 1514026,
+          "mediaType": "movie",
+          "title": "Buddy",
+          "year": "2026",
+          "rating": 6.8,
+          "poster": "posters/movie-1514026.jpg"
+        },
+        {
+          "id": 791523,
+          "mediaType": "movie",
+          "title": "Wildwood",
+          "year": "2026",
+          "rating": 8.4,
+          "poster": "posters/movie-791523.jpg"
+        }
+      ]
+    }
+  ]
+}
