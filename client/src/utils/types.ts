@@ -259,6 +259,11 @@ export type SortDirection = 'asc' | 'desc';
 export type DiscoverSortBy =
   `${'popularity' | 'vote_average' | 'primary_release_date' | 'first_air_date' | 'title' | 'name' | 'revenue' | 'vote_count'}.${SortDirection}`;
 
+export type GenreMatch = 'any' | 'all';
+
+// TMDB's with_watch_monetization_types values
+export type WatchMonetizationType = 'flatrate' | 'free' | 'ads' | 'rent' | 'buy';
+
 export interface DiscoverFilterParams {
   mediaType: 'movie' | 'tv';
   searchQuery?: string;
@@ -275,13 +280,18 @@ export interface DiscoverFilterParams {
   tvTypes?: number[];       // TV only; with_type
   tvStatuses?: number[];    // TV only; with_status
   sortBy?: DiscoverSortBy;
-  genreIds?: number[];      // AND logic, comma-joined for with_genres
-  companyIds?: number[];    // AND logic, comma-joined for with_companies
+  genreIds?: number[];      // with_genres; OR (pipe) unless genreMatch is 'all' (comma)
+  genreMatch?: GenreMatch;
+  excludeGenreIds?: number[]; // pipe-joined for without_genres
+  companyIds?: number[];    // OR logic, pipe-joined for with_companies
+  excludeCompanyIds?: number[]; // pipe-joined for without_companies
   networkIds?: number[];    // OR logic, pipe-joined for with_networks; TV only
   keywordIds?: number[];    // OR logic, pipe-joined for with_keywords
   excludeKeywordIds?: number[]; // pipe-joined for without_keywords
   personIds?: number[];     // OR logic, pipe-joined for with_people; movie only
   watchProviderIds?: number[]; // OR logic, pipe-joined for with_watch_providers
-  watchRegion?: string;     // required alongside watchProviderIds; region-scoped
+  excludeWatchProviderIds?: number[]; // pipe-joined for without_watch_providers
+  watchMonetization?: WatchMonetizationType[]; // narrows watchProviderIds; server default flatrate
+  watchRegion?: string;     // required alongside either provider list; region-scoped
   page?: number;            // 1-based; TMDB caps at 500
 }

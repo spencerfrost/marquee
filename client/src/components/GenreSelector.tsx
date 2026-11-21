@@ -16,9 +16,17 @@ interface Props {
   genres: Genre[];
   selectedIds: number[];
   onChange: (ids: number[]) => void;
+  placeholder?: string;
+  badgeClassName?: string;
 }
 
-export const GenreSelector: React.FC<Props> = ({ genres, selectedIds, onChange }) => {
+export const GenreSelector: React.FC<Props> = ({
+  genres,
+  selectedIds,
+  onChange,
+  placeholder = "Search or select a genre...",
+  badgeClassName = "bg-amber-500 text-slate-950",
+}) => {
   // Separate selected genres for badges and unselected for the dropdown
   const selectedGenres = genres.filter(g => selectedIds.includes(g.id));
   const availableGenres = genres.filter(g => !selectedIds.includes(g.id));
@@ -36,12 +44,12 @@ export const GenreSelector: React.FC<Props> = ({ genres, selectedIds, onChange }
             <Badge
               key={g.id}
               variant="default"
-              className="flex items-center gap-1 bg-amber-500 text-slate-950"
+              className={`flex items-center gap-1 ${badgeClassName}`}
             >
               {g.name}
               <button 
                 onClick={() => handleRemove(g.id)} 
-                className="ml-1 rounded-full p-0.5 hover:bg-amber-600 transition-colors"
+                className="ml-1 rounded-full p-0.5 hover:bg-black/20 transition-colors"
                 aria-label={`Remove ${g.name}`}
               >
                 <X className="h-3 w-3" />
@@ -59,7 +67,7 @@ export const GenreSelector: React.FC<Props> = ({ genres, selectedIds, onChange }
         onValueChange={(value: Genre[]) => onChange(value.map(g => g.id))}
         itemToStringLabel={(g: Genre) => g.name}
       >
-        <ComboboxInput placeholder="Search or select a genre..." className="border-slate-700 bg-slate-800/80 text-sm text-slate-100" />
+        <ComboboxInput placeholder={placeholder} className="border-slate-700 bg-slate-800/80 text-sm text-slate-100" />
         <ComboboxContent className="border-slate-700 bg-slate-900 shadow-xl">
           <ComboboxEmpty className="text-slate-400">No genres found.</ComboboxEmpty>
           <ComboboxList>

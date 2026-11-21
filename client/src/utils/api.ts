@@ -284,10 +284,10 @@ export const fetchDiscoverMediaWithFilters = async (
 ): Promise<TMDBDiscoverResponse> => {
   const {
     mediaType, searchQuery, dateFrom, dateTo, minRating, minVoteCount, sortBy,
-    genreIds, companyIds, networkIds, page,
+    genreIds, genreMatch, excludeGenreIds, companyIds, excludeCompanyIds, networkIds, page,
     originalLanguage, originCountry, certification, runtimeMin, runtimeMax,
     tvTypes, tvStatuses, keywordIds, excludeKeywordIds, personIds,
-    watchProviderIds, watchRegion,
+    watchProviderIds, excludeWatchProviderIds, watchMonetization, watchRegion,
   } = params;
 
   const query = new URLSearchParams();
@@ -305,9 +305,11 @@ export const fetchDiscoverMediaWithFilters = async (
   if (runtimeMin !== undefined) query.set('runtimeMin', String(runtimeMin));
   if (runtimeMax !== undefined) query.set('runtimeMax', String(runtimeMax));
 
-  // Pipe = OR within a param; genres and companies are AND'd across params
-  if (genreIds?.length) query.set('genreIds', genreIds.join('|'));
+  // Pipe = OR within a param, comma = AND; only genres offer the AND choice
+  if (genreIds?.length) query.set('genreIds', genreIds.join(genreMatch === 'all' ? ',' : '|'));
+  if (excludeGenreIds?.length) query.set('excludeGenreIds', excludeGenreIds.join('|'));
   if (companyIds?.length) query.set('companyIds', companyIds.join('|'));
+  if (excludeCompanyIds?.length) query.set('excludeCompanyIds', excludeCompanyIds.join('|'));
   if (networkIds?.length) query.set('networkIds', networkIds.join('|'));
   if (tvTypes?.length) query.set('tvTypes', tvTypes.join('|'));
   if (tvStatuses?.length) query.set('tvStatuses', tvStatuses.join('|'));
@@ -315,8 +317,12 @@ export const fetchDiscoverMediaWithFilters = async (
   if (excludeKeywordIds?.length) query.set('excludeKeywordIds', excludeKeywordIds.join('|'));
   if (personIds?.length) query.set('personIds', personIds.join('|'));
   // Region-scoped — only meaningful (and only sent) together
-  if (watchProviderIds?.length && watchRegion) {
-    query.set('watchProviderIds', watchProviderIds.join('|'));
+  if ((watchProviderIds?.length || excludeWatchProviderIds?.length) && watchRegion) {
+    if (watchProviderIds?.length) {
+      query.set('watchProviderIds', watchProviderIds.join('|'));
+      if (watchMonetization?.length) query.set('watchMonetization', watchMonetization.join('|'));
+    }
+    if (excludeWatchProviderIds?.length) query.set('excludeWatchProviderIds', excludeWatchProviderIds.join('|'));
     query.set('watchRegion', watchRegion);
   }
 

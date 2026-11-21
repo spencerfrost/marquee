@@ -12,6 +12,8 @@ import type {
   SortField,
   SortDirection,
   DiscoverSortBy,
+  GenreMatch,
+  WatchMonetizationType,
   WatchProviderEntry,
 } from '@/utils/types';
 import MediaCard from './MediaCard';
@@ -53,7 +55,10 @@ export interface DiscoverFilters {
   tvTypes: number[]; // TV only
   tvStatuses: number[]; // TV only
   genreIds: number[];
+  genreMatch: GenreMatch;
+  excludeGenreIds: number[];
   companies: CompanySummary[];
+  excludeCompanies: CompanySummary[];
   networks: NetworkSummary[];
   sortField: SortField;
   sortDirection: SortDirection;
@@ -63,9 +68,13 @@ export interface DiscoverFilters {
   // mediaType is 'tv' switches the grid to that person's TV credits
   // instead of filtering, so only one is kept for TV (see fetchPage).
   people: PersonSummary[];
-  // Region-scoped (see useWatchRegion) — cleared when the region changes,
-  // since a provider id valid in one region may match nothing in another.
+  // Region-scoped (see useWatchRegion) — both lists are cleared when the
+  // region changes, since a provider id valid in one region may match
+  // nothing in another.
   watchProviderIds: number[];
+  excludeWatchProviderIds: number[];
+  // How the included providers must offer it; never empty
+  watchMonetization: WatchMonetizationType[];
 }
 
 const initialFilters: DiscoverFilters = {
@@ -83,7 +92,10 @@ const initialFilters: DiscoverFilters = {
   tvTypes: [],
   tvStatuses: [],
   genreIds: [],
+  genreMatch: 'any',
+  excludeGenreIds: [],
   companies: [],
+  excludeCompanies: [],
   networks: [],
   sortField: 'popularity',
   sortDirection: 'desc',
@@ -91,6 +103,8 @@ const initialFilters: DiscoverFilters = {
   excludeKeywords: [],
   people: [],
   watchProviderIds: [],
+  excludeWatchProviderIds: [],
+  watchMonetization: ['flatrate'],
 };
 
 export type FilterAction =
@@ -106,14 +120,19 @@ export type FilterAction =
   | { type: 'SET_TV_TYPES'; value: number[] }
   | { type: 'SET_TV_STATUSES'; value: number[] }
   | { type: 'SET_GENRE_IDS'; value: number[] }
+  | { type: 'SET_GENRE_MATCH'; value: GenreMatch }
+  | { type: 'SET_EXCLUDE_GENRE_IDS'; value: number[] }
   | { type: 'SET_COMPANIES'; value: CompanySummary[] }
+  | { type: 'SET_EXCLUDE_COMPANIES'; value: CompanySummary[] }
   | { type: 'SET_NETWORKS'; value: NetworkSummary[] }
   | { type: 'SET_SORT_FIELD'; value: SortField }
   | { type: 'SET_SORT_DIRECTION'; value: SortDirection }
   | { type: 'SET_KEYWORDS'; value: KeywordSummary[] }
   | { type: 'SET_EXCLUDE_KEYWORDS'; value: KeywordSummary[] }
   | { type: 'SET_PEOPLE'; value: PersonSummary[] }
-  | { type: 'SET_WATCH_PROVIDER_IDS'; value: number[] };
+  | { type: 'SET_WATCH_PROVIDER_IDS'; value: number[] }
+  | { type: 'SET_EXCLUDE_WATCH_PROVIDER_IDS'; value: number[] }
+  | { type: 'SET_WATCH_MONETIZATION'; value: WatchMonetizationType[] };
 
 function filtersReducer(state: DiscoverFilters, action: FilterAction): DiscoverFilters {
   switch (action.type) {
@@ -126,6 +145,7 @@ function filtersReducer(state: DiscoverFilters, action: FilterAction): DiscoverF
         ...state,
         mediaType: action.value,
         genreIds: [],
+        excludeGenreIds: [],
         sortField: sortStillValid ? state.sortField : 'popularity',
         // TV has no with_people equivalent — a person selection there means
         // "show this person's TV credits," which only makes sense for one.
@@ -154,8 +174,14 @@ function filtersReducer(state: DiscoverFilters, action: FilterAction): DiscoverF
       return { ...state, tvStatuses: action.value };
     case 'SET_GENRE_IDS':
       return { ...state, genreIds: action.value };
+    case 'SET_GENRE_MATCH':
+      return { ...state, genreMatch: action.value };
+    case 'SET_EXCLUDE_GENRE_IDS':
+      return { ...state, excludeGenreIds: action.value };
     case 'SET_COMPANIES':
       return { ...state, companies: action.value };
+    case 'SET_EXCLUDE_COMPANIES':
+      return { ...state, excludeCompanies: action.value };
     case 'SET_NETWORKS':
       return { ...state, networks: action.value };
     case 'SET_KEYWORDS':
@@ -166,6 +192,11 @@ function filtersReducer(state: DiscoverFilters, action: FilterAction): DiscoverF
       return { ...state, people: state.mediaType === 'tv' ? action.value.slice(0, 1) : action.value };
     case 'SET_WATCH_PROVIDER_IDS':
       return { ...state, watchProviderIds: action.value };
+    case 'SET_EXCLUDE_WATCH_PROVIDER_IDS':
+      return { ...state, excludeWatchProviderIds: action.value };
+    case 'SET_WATCH_MONETIZATION':
+      // Unticking the last type would mean "no way to watch it"; keep it
+      return action.value.length > 0 ? { ...state, watchMonetization: action.value } : state;
     case 'SET_SORT_FIELD':
       return { ...state, sortField: action.value };
     case 'SET_SORT_DIRECTION':
@@ -183,15 +214,20 @@ function filtersReducer(state: DiscoverFilters, action: FilterAction): DiscoverF
 // unfiltered grid needs the explicit `all` marker.
 const ALL_MARKER = 'all';
 
+const MONETIZATION_TYPES = ['flatrate', 'free', 'ads', 'rent', 'buy'] as const;
+
 const NUMBER_LIST_PARAMS = {
   genres: 'genreIds',
+  xgenres: 'excludeGenreIds',
   tvtype: 'tvTypes',
   tvstatus: 'tvStatuses',
   providers: 'watchProviderIds',
+  xproviders: 'excludeWatchProviderIds',
 } as const;
 
 const NAMED_LIST_PARAMS = {
   company: 'companies',
+  xcompany: 'excludeCompanies',
   network: 'networks',
   keyword: 'keywords',
   exclude: 'excludeKeywords',
@@ -217,6 +253,8 @@ function filtersToParams(filters: DiscoverFilters): URLSearchParams {
   setIf('cert', filters.certification);
   setIf('sort', filters.sortField, initialFilters.sortField);
   setIf('dir', filters.sortDirection, initialFilters.sortDirection);
+  setIf('gmatch', filters.genreMatch, initialFilters.genreMatch);
+  setIf('how', filters.watchMonetization.join(','), initialFilters.watchMonetization.join(','));
 
   for (const [key, field] of Object.entries(NUMBER_LIST_PARAMS)) {
     if (filters[field].length > 0) params.set(key, filters[field].join(','));
@@ -256,6 +294,8 @@ function filtersFromParams(params: URLSearchParams): DiscoverFilters {
     ? (sortParam as SortField)
     : initialFilters.sortField;
   const people = named('person').map(p => ({ ...p, profilePath: null, knownForDepartment: '' }));
+  const monetization = (params.get('how') ?? '').split(',')
+    .filter((t): t is WatchMonetizationType => (MONETIZATION_TYPES as readonly string[]).includes(t));
 
   return {
     mediaType,
@@ -272,7 +312,10 @@ function filtersFromParams(params: URLSearchParams): DiscoverFilters {
     tvTypes: numList('tvtype'),
     tvStatuses: numList('tvstatus'),
     genreIds: numList('genres'),
+    genreMatch: params.get('gmatch') === 'all' ? 'all' : 'any',
+    excludeGenreIds: numList('xgenres'),
     companies: named('company').map(c => ({ ...c, logoPath: null })),
+    excludeCompanies: named('xcompany').map(c => ({ ...c, logoPath: null })),
     networks: named('network'),
     sortField,
     sortDirection: params.get('dir') === 'asc' ? 'asc' : 'desc',
@@ -280,6 +323,8 @@ function filtersFromParams(params: URLSearchParams): DiscoverFilters {
     excludeKeywords: named('exclude'),
     people: mediaType === 'tv' ? people.slice(0, 1) : people,
     watchProviderIds: numList('providers'),
+    excludeWatchProviderIds: numList('xproviders'),
+    watchMonetization: monetization.length > 0 ? monetization : initialFilters.watchMonetization,
   };
 }
 
@@ -363,7 +408,7 @@ export const DiscoverPage: React.FC = () => {
   // Read via a ref rather than a fetchPage dependency: watchRegion changing
   // shouldn't by itself invalidate fetchPage's identity (that would refetch
   // the grid on every region change even with no provider filter active).
-  // It only matters when watchProviderIds is non-empty, and the effect below
+  // It only matters when a provider list is non-empty, and the effect below
   // clears that selection the instant the region changes, so the two never
   // go stale together.
   const watchRegionRef = useRef(watchRegion);
@@ -383,8 +428,11 @@ export const DiscoverPage: React.FC = () => {
       if (filters.watchProviderIds.length > 0) {
         trackedDispatch({ type: 'SET_WATCH_PROVIDER_IDS', value: [] });
       }
+      if (filters.excludeWatchProviderIds.length > 0) {
+        trackedDispatch({ type: 'SET_EXCLUDE_WATCH_PROVIDER_IDS', value: [] });
+      }
     }
-  }, [watchRegion, filters.watchProviderIds, trackedDispatch]);
+  }, [watchRegion, filters.watchProviderIds, filters.excludeWatchProviderIds, trackedDispatch]);
 
   const fetchPage = useCallback(async (pageToFetch: number): Promise<{
     results: MediaSummary[];
@@ -421,7 +469,10 @@ export const DiscoverPage: React.FC = () => {
       tvStatuses: mediaType === 'tv' && filters.tvStatuses.length > 0 ? filters.tvStatuses : undefined,
       sortBy: `${sortKey}.${filters.sortDirection}` as DiscoverSortBy,
       genreIds: filters.genreIds.length > 0 ? filters.genreIds : undefined,
+      genreMatch: filters.genreMatch,
+      excludeGenreIds: filters.excludeGenreIds.length > 0 ? filters.excludeGenreIds : undefined,
       companyIds: filters.companies.length > 0 ? filters.companies.map(c => c.id) : undefined,
+      excludeCompanyIds: filters.excludeCompanies.length > 0 ? filters.excludeCompanies.map(c => c.id) : undefined,
       // Networks are TV-only in TMDB; selections persist in state but are
       // never sent for movie requests
       networkIds: mediaType === 'tv' && filters.networks.length > 0
@@ -434,7 +485,11 @@ export const DiscoverPage: React.FC = () => {
         ? filters.people.map(p => p.id)
         : undefined,
       watchProviderIds: filters.watchProviderIds.length > 0 ? filters.watchProviderIds : undefined,
-      watchRegion: filters.watchProviderIds.length > 0 ? watchRegionRef.current : undefined,
+      excludeWatchProviderIds: filters.excludeWatchProviderIds.length > 0 ? filters.excludeWatchProviderIds : undefined,
+      watchMonetization: filters.watchMonetization,
+      watchRegion: filters.watchProviderIds.length > 0 || filters.excludeWatchProviderIds.length > 0
+        ? watchRegionRef.current
+        : undefined,
       page: pageToFetch,
     });
 

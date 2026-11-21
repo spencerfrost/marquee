@@ -11,7 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import type { Genre, CompanySummary, NetworkSummary, KeywordSummary, PersonSummary, WatchProviderEntry } from '@/utils/types';
+import type {
+  Genre,
+  GenreMatch,
+  CompanySummary,
+  NetworkSummary,
+  KeywordSummary,
+  PersonSummary,
+  WatchMonetizationType,
+  WatchProviderEntry,
+} from '@/utils/types';
 import type { DiscoverFilters, FilterAction } from './DiscoverPage';
 import { GenreSelector } from './GenreSelector';
 import { CompanySelector } from './CompanySelector';
@@ -74,6 +83,22 @@ const TV_STATUSES = [
   { value: 4, label: 'Canceled' },
   { value: 5, label: 'Pilot' },
 ];
+
+const GENRE_MATCHES: { value: GenreMatch; label: string }[] = [
+  { value: 'any', label: 'Any' },
+  { value: 'all', label: 'All' },
+];
+
+const MONETIZATION_OPTIONS: { value: WatchMonetizationType; label: string }[] = [
+  { value: 'flatrate', label: 'Subscription' },
+  { value: 'free', label: 'Free' },
+  { value: 'ads', label: 'With ads' },
+  { value: 'rent', label: 'Rent' },
+  { value: 'buy', label: 'Buy' },
+];
+
+// Shared by every "Exclude …" selector so excluded picks read as such
+const EXCLUDE_BADGE = 'bg-red-500/20 text-red-300 border border-red-500/40';
 
 function toggleInArray(current: number[], value: number): number[] {
   return current.includes(value)
@@ -160,13 +185,17 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
     (filters.originCountry !== null ? 1 : 0) +
     (mediaType === 'movie' && filters.certification !== null ? 1 : 0) +
     filters.genreIds.length +
+    filters.excludeGenreIds.length +
     filters.companies.length +
+    filters.excludeCompanies.length +
     (mediaType === 'tv' ? filters.networks.length : 0) +
     (mediaType === 'tv' ? filters.tvTypes.length + filters.tvStatuses.length : 0) +
     filters.keywords.length +
     filters.excludeKeywords.length +
     filters.people.length +
-    filters.watchProviderIds.length;
+    filters.watchProviderIds.length +
+    filters.excludeWatchProviderIds.length +
+    (filters.watchProviderIds.length > 0 && filters.watchMonetization.join() !== 'flatrate' ? 1 : 0);
 
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-black/30 backdrop-blur-md transition-all duration-300">
@@ -425,16 +454,53 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
               )}
             </div>
 
-            {/* Categorical Selectors */}
+            {/* Categorical Selectors — each include filter sits beside its exclude */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
-                <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                  Genres
-                </Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Genres
+                  </Label>
+                  {/* Only meaningful once there's more than one genre to combine */}
+                  {filters.genreIds.length > 1 && (
+                    <div className="flex gap-1" role="group" aria-label="Genre matching">
+                      {GENRE_MATCHES.map((match) => {
+                        const active = filters.genreMatch === match.value;
+                        return (
+                          <button
+                            key={match.value}
+                            type="button"
+                            aria-pressed={active}
+                            onClick={() => dispatch({ type: 'SET_GENRE_MATCH', value: match.value })}
+                            className={`rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors ${active
+                              ? 'border-amber-500/60 bg-amber-500/20 text-amber-400'
+                              : 'border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800'
+                              }`}
+                          >
+                            {match.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
                 <GenreSelector
-                  genres={genres}
+                  genres={genres.filter(g => !filters.excludeGenreIds.includes(g.id))}
                   selectedIds={filters.genreIds}
                   onChange={(ids) => dispatch({ type: 'SET_GENRE_IDS', value: ids })}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Exclude Genres
+                </Label>
+                <GenreSelector
+                  genres={genres.filter(g => !filters.genreIds.includes(g.id))}
+                  selectedIds={filters.excludeGenreIds}
+                  onChange={(ids) => dispatch({ type: 'SET_EXCLUDE_GENRE_IDS', value: ids })}
+                  placeholder="e.g. Horror..."
+                  badgeClassName={EXCLUDE_BADGE}
                 />
               </div>
 
@@ -448,18 +514,16 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
                 />
               </div>
 
-              {/* TMDB only supports network filtering on /discover/tv */}
-              {mediaType === 'tv' && (
-                <div className="flex flex-col gap-2">
-                  <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                    Networks
-                  </Label>
-                  <NetworkSelector
-                    selectedNetworks={filters.networks}
-                    onChange={(networks: NetworkSummary[]) => dispatch({ type: 'SET_NETWORKS', value: networks })}
-                  />
-                </div>
-              )}
+              <div className="flex flex-col gap-2">
+                <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Exclude Studios
+                </Label>
+                <CompanySelector
+                  selectedCompanies={filters.excludeCompanies}
+                  onChange={(companies: CompanySummary[]) => dispatch({ type: 'SET_EXCLUDE_COMPANIES', value: companies })}
+                  badgeClassName={EXCLUDE_BADGE}
+                />
+              </div>
 
               <div className="flex flex-col gap-2">
                 <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
@@ -480,7 +544,58 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
                   selectedKeywords={filters.excludeKeywords}
                   onChange={(keywords: KeywordSummary[]) => dispatch({ type: 'SET_EXCLUDE_KEYWORDS', value: keywords })}
                   placeholder="e.g. superhero..."
-                  badgeClassName="bg-red-500/20 text-red-300 border border-red-500/40"
+                  badgeClassName={EXCLUDE_BADGE}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Where to Watch
+                </Label>
+                <WatchProviderSelector
+                  providers={watchProviderOptions.filter(p => !filters.excludeWatchProviderIds.includes(p.providerId))}
+                  selectedIds={filters.watchProviderIds}
+                  onChange={(ids) => dispatch({ type: 'SET_WATCH_PROVIDER_IDS', value: ids })}
+                />
+                {/* TMDB applies monetization types to the included providers only */}
+                {filters.watchProviderIds.length > 0 && (
+                  <div className="flex flex-wrap gap-2" role="group" aria-label="How it's offered">
+                    {MONETIZATION_OPTIONS.map((option) => {
+                      const active = filters.watchMonetization.includes(option.value);
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          aria-pressed={active}
+                          onClick={() => dispatch({
+                            type: 'SET_WATCH_MONETIZATION',
+                            value: active
+                              ? filters.watchMonetization.filter(v => v !== option.value)
+                              : [...filters.watchMonetization, option.value],
+                          })}
+                          className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${active
+                            ? 'border-amber-500/60 bg-amber-500/20 text-amber-400'
+                            : 'border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800'
+                            }`}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  Exclude Services
+                </Label>
+                <WatchProviderSelector
+                  providers={watchProviderOptions.filter(p => !filters.watchProviderIds.includes(p.providerId))}
+                  selectedIds={filters.excludeWatchProviderIds}
+                  onChange={(ids) => dispatch({ type: 'SET_EXCLUDE_WATCH_PROVIDER_IDS', value: ids })}
+                  placeholder="e.g. Netflix..."
+                  badgeClassName={EXCLUDE_BADGE}
                 />
               </div>
 
@@ -501,16 +616,18 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
                 )}
               </div>
 
-              <div className="flex flex-col gap-2">
-                <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                  Where to Watch
-                </Label>
-                <WatchProviderSelector
-                  providers={watchProviderOptions}
-                  selectedIds={filters.watchProviderIds}
-                  onChange={(ids) => dispatch({ type: 'SET_WATCH_PROVIDER_IDS', value: ids })}
-                />
-              </div>
+              {/* TMDB only supports network filtering on /discover/tv */}
+              {mediaType === 'tv' && (
+                <div className="flex flex-col gap-2">
+                  <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Networks
+                  </Label>
+                  <NetworkSelector
+                    selectedNetworks={filters.networks}
+                    onChange={(networks: NetworkSummary[]) => dispatch({ type: 'SET_NETWORKS', value: networks })}
+                  />
+                </div>
+              )}
             </div>
 
             {/* TV-only: type & status */}

@@ -15,6 +15,8 @@ interface Props {
   providers: WatchProviderEntry[];
   selectedIds: number[];
   onChange: (ids: number[]) => void;
+  placeholder?: string;
+  badgeClassName?: string;
 }
 
 // Mirrors GenreSelector: a short, fully-fetched list filtered locally rather
@@ -22,7 +24,13 @@ interface Props {
 // is region-scoped — the caller is responsible for clearing selectedIds when
 // the region changes, since a provider id selected in one region may not
 // exist (or mean the same availability) in another.
-export const WatchProviderSelector: React.FC<Props> = ({ providers, selectedIds, onChange }) => {
+export const WatchProviderSelector: React.FC<Props> = ({
+  providers,
+  selectedIds,
+  onChange,
+  placeholder = "Search or select a service...",
+  badgeClassName = "bg-amber-500 text-slate-950",
+}) => {
   const selectedProviders = providers.filter(p => selectedIds.includes(p.providerId));
   const availableProviders = providers.filter(p => !selectedIds.includes(p.providerId));
 
@@ -38,12 +46,12 @@ export const WatchProviderSelector: React.FC<Props> = ({ providers, selectedIds,
             <Badge
               key={p.providerId}
               variant="default"
-              className="flex items-center gap-1 bg-amber-500 text-slate-950"
+              className={`flex items-center gap-1 ${badgeClassName}`}
             >
               {p.providerName}
               <button
                 onClick={() => handleRemove(p.providerId)}
-                className="ml-1 rounded-full p-0.5 hover:bg-amber-600 transition-colors"
+                className="ml-1 rounded-full p-0.5 hover:bg-black/20 transition-colors"
                 aria-label={`Remove ${p.providerName}`}
               >
                 <X className="h-3 w-3" />
@@ -60,7 +68,7 @@ export const WatchProviderSelector: React.FC<Props> = ({ providers, selectedIds,
         onValueChange={(value: WatchProviderEntry[]) => onChange(value.map(p => p.providerId))}
         itemToStringLabel={(p: WatchProviderEntry) => p.providerName}
       >
-        <ComboboxInput placeholder="Search or select a service..." className="border-slate-700 bg-slate-800/80 text-sm text-slate-100" />
+        <ComboboxInput placeholder={placeholder} className="border-slate-700 bg-slate-800/80 text-sm text-slate-100" />
         <ComboboxContent className="border-slate-700 bg-slate-900 shadow-xl max-h-60 overflow-y-auto">
           <ComboboxEmpty className="text-slate-400">No streaming services found.</ComboboxEmpty>
           <ComboboxList>

@@ -19,11 +19,11 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
 
   const {
     searchQuery, dateFrom, dateTo, minRating, minVoteCount, sortBy,
-    genreIds, companyIds, networkIds, page,
+    genreIds, excludeGenreIds, companyIds, excludeCompanyIds, networkIds, page,
     originalLanguage, originCountry, certification,
     runtimeMin, runtimeMax, tvTypes, tvStatuses,
     keywordIds, excludeKeywordIds, personIds,
-    watchProviderIds, watchRegion,
+    watchProviderIds, excludeWatchProviderIds, watchRegion, watchMonetization,
   } = req.query;
 
   try {
@@ -57,7 +57,9 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
       [dateToKey]: dateTo as string | undefined,
       'vote_average.gte': minRating as string | undefined,
       with_genres: genreIds as string | undefined,
+      without_genres: excludeGenreIds as string | undefined,
       with_companies: companyIds as string | undefined,
+      without_companies: excludeCompanyIds as string | undefined,
       // TV-only: TMDB ignores with_networks on /discover/movie, and the
       // client only sends it for tv.
       with_networks: networkIds as string | undefined,
@@ -77,11 +79,14 @@ router.get('/:mediaType', async (req: Request, res: Response) => {
       // Movie-only: /discover/tv has no people parameter at all. The TV
       // person path is handled client-side via /person/{id}/tv_credits.
       with_people: mediaType === 'movie' ? (personIds as string | undefined) : undefined,
-      // watch_region is required for TMDB to interpret with_watch_providers;
+      // watch_region is required for TMDB to interpret with/without_watch_providers;
       // the client only ever sends it alongside a non-empty provider list.
+      // Monetization defaults to subscription-only, and only narrows the
+      // included providers.
       with_watch_providers: watchProviderIds as string | undefined,
-      watch_region: watchProviderIds ? (watchRegion as string | undefined) : undefined,
-      with_watch_monetization_types: watchProviderIds ? 'flatrate' : undefined,
+      without_watch_providers: excludeWatchProviderIds as string | undefined,
+      watch_region: watchProviderIds || excludeWatchProviderIds ? (watchRegion as string | undefined) : undefined,
+      with_watch_monetization_types: watchProviderIds ? ((watchMonetization as string | undefined) || 'flatrate') : undefined,
       // Undocumented param — combines free text with discover filters.
       // This is the experimental piece; everything else above is
       // standard, documented /discover behavior.

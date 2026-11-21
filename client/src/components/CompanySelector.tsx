@@ -32,11 +32,15 @@ const TOP_COMPANIES: CompanySummary[] = [
 interface CompanySelectorProps {
   selectedCompanies: CompanySummary[];
   onChange: (companies: CompanySummary[]) => void;
+  placeholder?: string;
+  badgeClassName?: string;
 }
 
 export const CompanySelector: React.FC<CompanySelectorProps> = ({ 
-  selectedCompanies, 
-  onChange 
+  selectedCompanies,
+  onChange,
+  placeholder = "Search studios...",
+  badgeClassName = "bg-amber-500 text-slate-950",
 }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<CompanySummary[]>([]);
@@ -95,12 +99,12 @@ export const CompanySelector: React.FC<CompanySelectorProps> = ({
             <Badge 
               key={c.id} 
               variant="default" 
-              className="flex items-center gap-1 bg-amber-500 text-slate-950"
+              className={`flex items-center gap-1 ${badgeClassName}`}
             >
-              {c.name} {c.originCountry === 'US' ? '' : `(${c.originCountry})`}
+              {c.name} {c.originCountry && c.originCountry !== 'US' ? `(${c.originCountry})` : ''}
               <button 
                 onClick={() => handleRemove(c.id)} 
-                className="ml-1 rounded-full p-0.5 hover:bg-amber-600 transition-colors"
+                className="ml-1 rounded-full p-0.5 hover:bg-black/20 transition-colors"
                 aria-label={`Remove ${c.name}`}
               >
                 <X className="h-3 w-3" />
@@ -113,7 +117,7 @@ export const CompanySelector: React.FC<CompanySelectorProps> = ({
       {/* Combobox Dropdown */}
       <Combobox items={availableItems} onValueChange={handleSelect}>
         <ComboboxInput 
-          placeholder="Search studios..." 
+          placeholder={placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="border-slate-700 bg-slate-800/80 text-sm text-slate-100" 
@@ -129,7 +133,7 @@ export const CompanySelector: React.FC<CompanySelectorProps> = ({
                 value={company.id.toString()}
                 className="text-slate-300 hover:bg-slate-800 hover:text-slate-100 cursor-pointer py-2 px-4 text-sm w-full text-left"
               >
-                {company.name} {company.originCountry === 'US' ? '' : `(${company.originCountry})`}
+                {company.name} {company.originCountry && company.originCountry !== 'US' ? `(${company.originCountry})` : ''}
               </ComboboxItem>
             )}
           </ComboboxList>
