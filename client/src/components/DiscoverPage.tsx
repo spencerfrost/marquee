@@ -19,10 +19,8 @@ import type {
 import MediaCard from './MediaCard';
 import { DiscoverControls } from './DiscoverControls';
 import { SortSelector } from './SortSelector';
-import { OmniSearch } from './OmniSearch';
-import { HomeRails } from './HomeRails';
-import { RegionPicker, useWatchRegion } from './RegionPicker';
-import { SeerrSettings } from './SeerrSettings';
+import { useWatchRegion } from './RegionPicker';
+import { BrowseLayout } from './SiteHeader';
 import { Alert, AlertDescription } from './ui/alert';
 
 // TMDB uses different sort_by keys for movies vs TV; the UI stores the
@@ -210,10 +208,7 @@ function filtersReducer(state: DiscoverFilters, action: FilterAction): DiscoverF
 // and searches can be bookmarked or shared. Only non-default values are
 // written. Named selections (companies, keywords…) are stored as `id:name`
 // so their badges render without a lookup; repeated params, since names can
-// contain commas. A URL with no params at all is the home-rails view, so an
-// unfiltered grid needs the explicit `all` marker.
-const ALL_MARKER = 'all';
-
+// contain commas.
 const MONETIZATION_TYPES = ['flatrate', 'free', 'ads', 'rent', 'buy'] as const;
 
 const NUMBER_LIST_PARAMS = {
@@ -263,14 +258,14 @@ function filtersToParams(filters: DiscoverFilters): URLSearchParams {
     for (const { id, name } of filters[field]) params.append(key, `${id}:${name}`);
   }
 
-  if ([...params.keys()].length === 0) params.set(ALL_MARKER, '1');
   return params;
 }
 
 // Link into Discover with only the given filters set — used by detail pages
 // to turn genres, keywords, companies and networks into browsable links.
 export function discoverHref(overrides: Partial<DiscoverFilters>): string {
-  return `/?${filtersToParams({ ...initialFilters, ...overrides })}`;
+  const params = filtersToParams({ ...initialFilters, ...overrides }).toString();
+  return params ? `/discover?${params}` : '/discover';
 }
 
 function filtersFromParams(params: URLSearchParams): DiscoverFilters {
@@ -341,7 +336,7 @@ let gridCache: {
 } | null = null;
 
 export const DiscoverPage: React.FC = () => {
-  useDocumentTitle();
+  useDocumentTitle('Discover');
   // The URL is the source of truth for filters; the reducer still computes
   // transitions and the result is written back as search params. `replace`
   // so tweaking filters doesn't pile up history entries ahead of Back.
@@ -374,11 +369,6 @@ export const DiscoverPage: React.FC = () => {
     if (restored) requestAnimationFrame(() => window.scrollTo(0, restored.scrollY));
   }, [restored]);
   const [genres, setGenres] = useState<Genre[]>([]);
-
-  // `/` opens on trending rails, not an unfiltered discover query — the grid
-  // (and its fetch) only kicks in once the user actually touches a filter,
-  // which always writes at least one param.
-  const browsing = queryKey === '';
 
   // Tracks the latest filters synchronously so two dispatches in one tick
   // build on each other rather than both on the last render's value.
@@ -419,8 +409,7 @@ export const DiscoverPage: React.FC = () => {
   // Providers are region-scoped — a selection made in one region may match
   // nothing (or a different service) in another, so drop it on region change
   // rather than silently sending a filter that no longer means what the user
-  // picked. A provider selection only exists off the home rails, so this
-  // never pulls the page out of the browsing state.
+  // picked.
   const prevWatchRegionRef = useRef(watchRegion);
   useEffect(() => {
     if (prevWatchRegionRef.current !== watchRegion) {
@@ -568,10 +557,10 @@ export const DiscoverPage: React.FC = () => {
   // on mount (and StrictMode's repeat effect run doesn't fetch twice).
   const loadedKeyRef = useRef<string | null>(restored ? queryKey : null);
   useEffect(() => {
-    if (browsing || loadedKeyRef.current === queryKey) return;
+    if (loadedKeyRef.current === queryKey) return;
     loadedKeyRef.current = queryKey;
     fetchData();
-  }, [fetchData, browsing, queryKey]);
+  }, [fetchData, queryKey]);
 
   // Snapshot for the gridCache restore above; scroll is read at unmount, when
   // the user leaves for a detail page. The ref keeps the cleanup from
@@ -579,10 +568,10 @@ export const DiscoverPage: React.FC = () => {
   // after the grid's DOM is gone and scrollY has clamped to the new page.
   const gridSnapshotRef = useRef<Omit<NonNullable<typeof gridCache>, 'scrollY'> | null>(null);
   useEffect(() => {
-    gridSnapshotRef.current = browsing || loading
+    gridSnapshotRef.current = loading
       ? null
       : { key: queryKey, items, page, totalPages, totalResults };
-  }, [browsing, loading, queryKey, items, page, totalPages, totalResults]);
+  }, [loading, queryKey, items, page, totalPages, totalResults]);
   useLayoutEffect(() => () => {
     const snapshot = gridSnapshotRef.current;
     gridCache = snapshot ? { ...snapshot, scrollY: window.scrollY } : null;
@@ -605,118 +594,84 @@ export const DiscoverPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      {/* Ambient backdrop texture - subtle, fixed, doesn't scroll with content */}
-      <div
-        className="pointer-events-none fixed inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-          backgroundSize: '32px 32px',
-        }}
+    <BrowseLayout>
+      <DiscoverControls
+        filters={filters}
+        dispatch={trackedDispatch}
+        genres={genres}
+        watchProviderOptions={watchProviderOptions}
+        loading={loading}
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6">
-        <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-            <div className="flex items-center gap-2">
-              <img src='logo192.png' alt="Logo" className="h-16 w-16" />
-              Marquee
+      {filters.mediaType === 'tv' && filters.people.length > 0 && (
+        <Alert className="mb-6 border-amber-500/30 bg-amber-500/10 text-amber-200">
+          <AlertDescription>
+            Showing TV credits for {filters.people[0].name} — TMDB has no TV person filter,
+            so this replaces the other filters rather than narrowing them.
+          </AlertDescription>
+        </Alert>
+      )}
 
-            </div>
-          </h1>
-          <div className="flex items-center gap-3">
-            <OmniSearch />
-            <RegionPicker />
-            <SeerrSettings />
-          </div>
-        </header>
+      {error && (
+        <Alert
+          variant="destructive"
+          className="mb-6 border-red-900/50 bg-red-950/40 text-red-200"
+        >
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-        <DiscoverControls
-          filters={filters}
-          dispatch={trackedDispatch}
-          genres={genres}
-          watchProviderOptions={watchProviderOptions}
-          onSearch={() => { if (browsing) commitFilters(filtersRef.current); }}
-          loading={loading}
+      <div className="my-3 flex items-center justify-between">
+        <SortSelector
+          mediaType={filters.mediaType}
+          sortField={filters.sortField}
+          sortDirection={filters.sortDirection}
+          onFieldChange={(value) => trackedDispatch({ type: 'SET_SORT_FIELD', value })}
+          onDirectionChange={(value) => trackedDispatch({ type: 'SET_SORT_DIRECTION', value })}
         />
-
-        {filters.mediaType === 'tv' && filters.people.length > 0 && (
-          <Alert className="mb-6 border-amber-500/30 bg-amber-500/10 text-amber-200">
-            <AlertDescription>
-              Showing TV credits for {filters.people[0].name} — TMDB has no TV person filter,
-              so this replaces the other filters rather than narrowing them.
-            </AlertDescription>
-          </Alert>
+        {!loading && (
+          <p className="font-mono text-xs text-slate-500">
+            {items.length} of {totalResults} {totalResults === 1 ? 'result' : 'results'}
+          </p>
         )}
-
-        {error && (
-          <Alert
-            variant="destructive"
-            className="mb-6 border-red-900/50 bg-red-950/40 text-red-200"
-          >
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {browsing ? (
-          <HomeRails />
-        ) : (
-          <>
-            <div className="my-3 flex items-center justify-between">
-              <SortSelector
-                mediaType={filters.mediaType}
-                sortField={filters.sortField}
-                sortDirection={filters.sortDirection}
-                onFieldChange={(value) => trackedDispatch({ type: 'SET_SORT_FIELD', value })}
-                onDirectionChange={(value) => trackedDispatch({ type: 'SET_SORT_DIRECTION', value })}
-              />
-              {!loading && (
-                <p className="font-mono text-xs text-slate-500">
-                  {items.length} of {totalResults} {totalResults === 1 ? 'result' : 'results'}
-                </p>
-              )}
-            </div>
-
-            {loading ? (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="aspect-[2/3] animate-pulse rounded-xl bg-slate-800/60"
-                    style={{ animationDelay: `${(i % 6) * 60}ms` }}
-                  />
-                ))}
-              </div>
-            ) : items.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                {items.map((item) => (
-                  <MediaCard key={item.id} item={item} />
-                ))}
-                {loadingMore &&
-                  Array.from({ length: 6 }).map((_, i) => (
-                    <div
-                      key={`more-${i}`}
-                      className="aspect-[2/3] animate-pulse rounded-xl bg-slate-800/60"
-                      style={{ animationDelay: `${i * 60}ms` }}
-                    />
-                  ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 py-20 text-center">
-                <p className="text-sm font-medium text-slate-300">No results found</p>
-                <p className="mt-1 text-sm text-slate-500">
-                  Try a different title, or loosen the date and rating filters.
-                </p>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Always mounted so the once-created IntersectionObserver stays
-            attached; loadMore's guards decide whether a firing does anything */}
-        <div ref={sentinelRef} className="h-px" />
       </div>
-    </div>
+
+      {loading ? (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={i}
+              className="aspect-[2/3] animate-pulse rounded-xl bg-slate-800/60"
+              style={{ animationDelay: `${(i % 6) * 60}ms` }}
+            />
+          ))}
+        </div>
+      ) : items.length > 0 ? (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {items.map((item) => (
+            <MediaCard key={item.id} item={item} />
+          ))}
+          {loadingMore &&
+            Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={`more-${i}`}
+                className="aspect-[2/3] animate-pulse rounded-xl bg-slate-800/60"
+                style={{ animationDelay: `${i * 60}ms` }}
+              />
+            ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-800 py-20 text-center">
+          <p className="text-sm font-medium text-slate-300">No results found</p>
+          <p className="mt-1 text-sm text-slate-500">
+            Try a different title, or loosen the date and rating filters.
+          </p>
+        </div>
+      )}
+
+      {/* Always mounted so the once-created IntersectionObserver stays
+          attached; loadMore's guards decide whether a firing does anything */}
+      <div ref={sentinelRef} className="h-px" />
+    </BrowseLayout>
   );
 };

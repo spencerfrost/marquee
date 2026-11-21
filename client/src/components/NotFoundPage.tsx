@@ -16,7 +16,7 @@ export const NotFoundPage: React.FC = () => {
           to="/"
           className="mt-6 inline-block rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-amber-400"
         >
-          Back to Discover
+          Back to home
         </Link>
       </div>
     </DetailContainer>

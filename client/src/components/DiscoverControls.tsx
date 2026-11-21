@@ -111,7 +111,6 @@ interface DiscoverControlsProps {
   dispatch: React.Dispatch<FilterAction>;
   genres: Genre[];
   watchProviderOptions: WatchProviderEntry[];
-  onSearch: () => void;
   loading: boolean;
 }
 
@@ -120,7 +119,6 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
   dispatch,
   genres,
   watchProviderOptions,
-  onSearch,
   loading,
 }) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
@@ -156,7 +154,6 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
 
   const handleSearchCommit = () => {
     commitSearch(searchDraft);
-    onSearch();
   };
 
   const { mediaType } = filters;

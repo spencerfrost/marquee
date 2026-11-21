@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { DiscoverPage } from "./components/DiscoverPage";
+import { HomePage } from "./components/HomePage";
 import DetailPage from "./components/DetailPage";
 import EpisodeDetailView from "./components/EpisodeDetailView";
 import PersonDetailView from "./components/PersonDetailView";
@@ -14,11 +15,8 @@ const App: React.FC = () => {
     <Router>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={
-          <div className="min-h-screen bg-gray-900 text-white">
-            <DiscoverPage />
-          </div>
-        } />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/collection/:id" element={<CollectionDetailView />} />
         <Route path="/:mediaType/:id" element={<DetailPage />} />
