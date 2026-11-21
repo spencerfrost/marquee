@@ -45,8 +45,8 @@ const MediaCard: React.FC<MediaCardProps> = ({ item }) => {
         </div>
       )}
 
-      {/* Permanent bottom gradient for legibility */}
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/95 via-black/60 to-transparent" />
+      {/* Legibility scrim: darkens the bottom of the poster for the title */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-linear-to-t from-black/90 via-black/55 via-45% to-transparent" />
 
       {/* Score ring - top left, always visible */}
       <div className="absolute left-2.5 top-2.5 z-10">
@@ -117,10 +117,10 @@ const MediaCard: React.FC<MediaCardProps> = ({ item }) => {
 
       {/* Title and metadata */}
       <div className="absolute inset-x-0 bottom-0 p-3">
-        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-white drop-shadow-sm">
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.9)]">
           {item.title}
         </h3>
-        <p className="mt-1 text-xs font-medium text-slate-400">
+        <p className="mt-1 text-xs font-medium text-slate-300">
           {item.releaseDate
             ? releaseYear(item.releaseDate)
             : 'Unknown year'}
