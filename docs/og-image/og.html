@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- Source for client/public/og-image.png (1200x630 social preview). Regenerate from the repo root with:
+     google-chrome --headless=new --hide-scrollbars --window-size=1200,630 --virtual-time-budget=3000 --screenshot=client/public/og-image.png "file://$PWD/docs/og-image/og.html" -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: Geist; src: url(../../client/node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; background: #020617; overflow: hidden; }
+  body { font-family: Geist, sans-serif; position: relative; color: #f1f5f9; }
+  .dots { position: absolute; inset: 0; opacity: .05;
+    background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0); background-size: 32px 32px; }
+  .glow { position: absolute; width: 760px; height: 760px; left: -180px; top: -260px;
+    background: radial-gradient(closest-side, rgba(245,158,11,.16), transparent); }
+  svg.frame { position: absolute; inset: 0; }
+  .left { position: absolute; left: 96px; top: 0; bottom: 0; width: 560px;
+    display: flex; flex-direction: column; justify-content: center; }
+  .brand { display: flex; align-items: center; gap: 22px; }
+  .brand h1 { font-size: 90px; font-weight: 700; letter-spacing: -0.045em; line-height: 1; }
+  .tag { margin-top: 34px; font-size: 40px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.15; color: #e2e8f0; }
+  .tag em { font-style: normal; color: #fbbf24; }
+  .sub { margin-top: 18px; font-size: 23px; color: #94a3b8; line-height: 1.4; }
+  .url { margin-top: 36px; font-size: 20px; font-weight: 500; color: #64748b; letter-spacing: .02em; }
+  .heat { position: absolute; right: 84px; top: 50%; transform: translateY(-50%); }
+  .heat .label { font-size: 15px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #64748b; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+  <div class="dots"></div>
+  <div class="glow"></div>
+  <svg class="frame" width="1200" height="630" id="frame"></svg>
+
+  <div class="left">
+    <div class="brand">
+      <svg width="96" height="96" viewBox="0 0 512 512">
+        <rect width="512" height="512" rx="100" fill="#0f172a"/>
+        <circle cx="256" cy="256" r="170" fill="none" stroke="#1e293b" stroke-width="44"/>
+        <circle cx="256" cy="256" r="170" fill="none" stroke="#f59e0b" stroke-width="44" stroke-linecap="round"
+          stroke-dasharray="801 1068" transform="rotate(-90 256 256)"/>
+        <text x="256" y="300" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="190" font-weight="900" fill="#fff">M</text>
+      </svg>
+      <h1>Marquee</h1>
+    </div>
+    <p class="tag">Find your next <em>movie</em><br>or <em>show</em> worth watching.</p>
+    <p class="sub">Deep filters, ratings, cast &amp; crew, episode<br>heatmaps, and where to stream it.</p>
+    <p class="url">marquee.mrspinn.ca</p>
+  </div>
+
+  <div class="heat">
+    <div class="label">Episode ratings</div>
+    <svg id="heat"></svg>
+  </div>
+
+<script>
+  // Marquee-sign bulb border
+  const f = document.getElementById('frame');
+  const NS = 'http://www.w3.org/2000/svg';
+  const inset = 30, step = 30, W = 1200, H = 630;
+  const pts = [];
+  for (let x = inset; x <= W - inset; x += step) { pts.push([x, inset]); pts.push([x, H - inset]); }
+  for (let y = inset + step; y < H - inset; y += step) { pts.push([inset, y]); pts.push([W - inset, y]); }
+  const defs = document.createElementNS(NS, 'defs');
+  defs.innerHTML = `<radialGradient id="b"><stop offset="0" stop-color="#fffbeb"/><stop offset=".45" stop-color="#fbbf24"/><stop offset="1" stop-color="#f59e0b" stop-opacity="0"/></radialGradient>
+                    <radialGradient id="h"><stop offset="0" stop-color="#f59e0b" stop-opacity=".35"/><stop offset="1" stop-color="#f59e0b" stop-opacity="0"/></radialGradient>`;
+  f.appendChild(defs);
+  pts.forEach(([x, y], i) => {
+    const lit = ((x + y) / step) % 3 !== 0;
+    if (lit) { const h = document.createElementNS(NS, 'circle'); h.setAttribute('cx', x); h.setAttribute('cy', y); h.setAttribute('r', 13); h.setAttribute('fill', 'url(#h)'); f.appendChild(h); }
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', lit ? 5 : 4);
+    c.setAttribute('fill', lit ? 'url(#b)' : '#3f3a2e');
+    f.appendChild(c);
+  });
+
+  // Stylised episode heatmap (illustrative data: a show that peaks in S3-S4, dips at the end)
+  const seasons = [[7.6,7.9,8.0,7.8,8.2,8.1,8.4,8.6],[8.0,8.3,8.1,8.5,8.7,8.4,8.9,9.1],[8.6,8.8,9.0,8.7,9.2,9.4,9.1,9.6],[8.9,9.1,8.8,9.3,9.0,9.5,9.7,9.8],[7.4,6.9,7.2,6.4,6.8,5.9,6.3,5.6]];
+  const col = v => v >= 9 ? '#22c55e' : v >= 8.4 ? '#4ade80' : v >= 7.8 ? '#a3e635' : v >= 7 ? '#fbbf24' : v >= 6.2 ? '#fb923c' : '#f87171';
+  const s = 44, g = 6, lw = 30;
+  const hm = document.getElementById('heat');
+  hm.setAttribute('width', lw + 8 * (s + g) - g); hm.setAttribute('height', 5 * (s + g) - g);
+  let out = '';
+  seasons.forEach((row, r) => {
+    out += `<text x="0" y="${r*(s+g)+s/2+6}" font-family="Geist" font-size="15" font-weight="600" fill="#64748b">S${r+1}</text>`;
+    row.forEach((v, c) => {
+      out += `<rect x="${lw + c*(s+g)}" y="${r*(s+g)}" width="${s}" height="${s}" rx="8" fill="${col(v)}" opacity=".92"/>`;
+      out += `<text x="${lw + c*(s+g)+s/2}" y="${r*(s+g)+s/2+5}" text-anchor="middle" font-family="Geist" font-size="15" font-weight="700" fill="#052e16" opacity=".75">${v.toFixed(1)}</text>`;
+    });
+  });
+  hm.innerHTML = out;
+</script>
+</body>
+</html>
