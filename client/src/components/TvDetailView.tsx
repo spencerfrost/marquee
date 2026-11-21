@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from './ui/alert';
 import { CastAndCrew } from './CastAndCrew';
 import { GenreLinks, MetadataLinks } from './MetadataLinks';
 import { EpisodeHeatmap } from './EpisodeHeatmap';
+import { useSeriesEpisodes } from '@/utils/episodeRatings';
 import { ScoreRing } from './ScoreRing';
 import { WatchProviders } from './WatchProviders';
 import MediaCard from './MediaCard';
@@ -81,13 +82,14 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
   }, [id, selectedSeasonNumber]);
 
   useDocumentTitle(show?.name);
+  const ratings = useSeriesEpisodes(id, show?.seasons);
 
   if (loading) return <div className="text-center py-12 text-gray-400">Loading TV show...</div>;
   if (error) return <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>;
   if (!show) return <div className="text-center py-12 text-gray-400">TV Show not found</div>;
 
   return (
-    <div className="overflow-hidden rounded-xl bg-slate-900">
+    <div className="overflow-clip rounded-xl bg-slate-900">
       {/* Hero: backdrop + poster + core info */}
       <div className="relative">
         {/* Backdrop layer */}
@@ -187,15 +189,15 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
         </div>
       </div>
 
-      {show.credits && (
-        <div className="border-t border-slate-800 px-6 py-6 md:px-8">
-          <CastAndCrew media={show} />
+      {ratings.seasonNumbers.length > 0 && (
+        <div className="border-t border-slate-800">
+          <EpisodeHeatmap seriesId={id} {...ratings} />
         </div>
       )}
 
-      {show.seasons && show.seasons.length > 0 && (
-        <div className="border-t border-slate-800">
-          <EpisodeHeatmap seriesId={id} seasons={show.seasons} />
+      {show.credits && (
+        <div className="border-t border-slate-800 px-6 py-6 md:px-8">
+          <CastAndCrew media={show} />
         </div>
       )}
 

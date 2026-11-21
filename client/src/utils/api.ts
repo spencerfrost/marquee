@@ -16,6 +16,7 @@ import type {
   RegionWatchProviders,
   WatchProviderEntry,
   WatchRegion,
+  TvEpisode,
 } from './types';
 
 export const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -227,6 +228,39 @@ export const fetchSeasonDetails = async (seriesId: number, seasonNumber: number)
   const response = await fetch(`/api/tv/${seriesId}/season/${seasonNumber}`);
   if (!response.ok) throw new Error('Failed to fetch season details');
   return response.json();
+};
+
+// The server batches at most 20 seasons per request (TMDB's append_to_response cap)
+const SEASON_BATCH_SIZE = 20;
+
+/** Every listed season's episodes, keyed by season number. Seasons TMDB doesn't return are omitted. */
+export const fetchSeasonsEpisodes = async (
+  seriesId: number,
+  seasonNumbers: number[]
+): Promise<Record<number, TvEpisode[]>> => {
+  const batches: number[][] = [];
+  for (let i = 0; i < seasonNumbers.length; i += SEASON_BATCH_SIZE) {
+    batches.push(seasonNumbers.slice(i, i + SEASON_BATCH_SIZE));
+  }
+
+  const responses = await Promise.all(
+    batches.map(async (batch) => {
+      const response = await fetch(`/api/tv/${seriesId}/seasons?numbers=${batch.join(',')}`);
+      if (!response.ok) throw new Error('Failed to fetch seasons');
+      return { batch, data: await response.json() };
+    })
+  );
+
+  const bySeason: Record<number, TvEpisode[]> = {};
+  for (const { batch, data } of responses) {
+    for (const n of batch) {
+      const episodes = data[`season/${n}`]?.episodes;
+      if (Array.isArray(episodes)) {
+        bySeason[n] = episodes.map((e: any) => ({ ...e, vote_count: e.vote_count ?? 0 }));
+      }
+    }
+  }
+  return bySeason;
 };
 
 export const fetchEpisodeDetails = async (
